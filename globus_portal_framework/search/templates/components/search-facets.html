@@ -1,0 +1,20 @@
+{% for facet in search.facets %}
+<fieldset class="facet-fieldset">
+    <legend>{{facet.name}}</legend>
+    <div class="fieldset-container mb-4">
+        {% for field in facet.buckets %}
+        <div class="facet-field mr-3">
+            <input type="checkbox" name="filter.{{field.field_name}}"
+                    value="{{field.value}}" class="facet-checkbox mr-1"
+                    {# Reset page to 1 if user facets on a paginated search #}
+                    onchange="customSearch(1);" autocomplete="off"
+                    {% if field.checked %}
+                    checked
+                    {% endif %}
+            >
+            {{field.value|truncatechars:50}}<span style="float: right">({{field.count}})</span>
+        </div>
+        {% endfor %}
+    </div>
+</fieldset>
+{% endfor %}

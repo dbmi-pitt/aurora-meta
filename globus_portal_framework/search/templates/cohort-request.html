@@ -1,0 +1,27 @@
+{%extends "base.html"%}
+
+{% load humanize %}
+{% load static %}
+ <script type="text/javascript" src="{% static 'js/fontawesome-all.min.js' %}"></script>
+ 
+{%block body%}
+<link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}" />
+<h2 align="center">Request Summary Details</h2><br>
+<div class="container">
+	<span class="results-info-text">Based upon the criteria you have selected your cohort contains an estimated <b><u>{{request.session.search.aggregate.0.total|intcomma}}</u></b> cases.</span>
+	<div class="email-form">
+		<br/>
+		<form action="mailto:midavis@pitt.edu?subject=CR3%20Request&body=I%20would%20like%20to%20discuss%20the%20following%20research%20cohort:" method="post" enctype="text/plain">
+		<span class="results-info-text">You entered the following term(s) for your initial disease or condition search:</span> 
+		<textarea readonly>{{request.session.search.query|safe}}</textarea>
+		<input type="hidden" name="Disease" value="{{request.session.search.query}}" readonly><br>
+		<input type="hidden" name="Num-of-Cases" value="{{request.session.search.aggregate.0.total}}" readonly><br>
+		<span class="results-info-text">Additional Comments for Request:</span><br>
+		<input type="text" name="Comments" size="100"><br><br>
+		<input type="submit" value="Review Email Request">
+		</form>
+	</div>
+	<br/>
+<i class="fas fa-arrow-circle-left"></i>&nbsp;&nbsp;<a class="medium" href="{% url 'search' %}?q={{request.session.search.query}}">Continue Exploring Data</a>
+</div>
+{% endblock %}

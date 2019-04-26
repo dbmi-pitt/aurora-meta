@@ -1,0 +1,178 @@
+{%extends "base.html"%}
+{% load humanize %}
+{% load static %}
+
+{%block title%}Search{%endblock%}
+
+{%block headextras%}
+  <!-- Required meta tags -->
+
+<!--
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+-->
+<script>
+  /*
+  This helper function ensures queries are inserted as the first query-param
+  so that the search url is copy-pastable by the user
+  */
+  function customSearch(page={{ search.pagination.current_page|default:"1"}}) {
+    //copy as a hidden field so we don't change the look of the page
+    var page = $('<input>').attr({type: 'hidden', id: 'foo',
+                                 name: 'page', value: page});
+    console.log(page)
+    var input = $('#search-input').clone().attr('type','hidden');
+    $('#facet-form').prepend(page).prepend(input).submit();
+  }
+
+/*
+function viewDoc() {
+    var x = document.getElementById("documentation");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+*/
+function replaceSingleQuotes(p1) {
+      var s1 = p1.replace(/\'/g, '"')
+    return s1
+}
+
+//try {
+// var diseasedataRaw = replaceSingleQuotes("{{request.session.search.summarydata|safe}}");
+// console.log(diseasedataRaw);
+// var jdata = JSON.parse(diseasedataRaw);
+// var diseasedata = jdata[0].values;
+
+// // Load the Visualization API and the corechart package.
+// google.charts.load('current', {'packages':['corechart']});
+
+// // Set a callback to run when the Google Visualization API is loaded.
+// google.charts.setOnLoadCallback(function(){ drawOverviewPieChart(diseasedata) });   //drawChart);
+// } catch(err) {
+//   console.log(err);
+// } 
+
+var samplesDataRaw = replaceSingleQuotes("{{request.session.search.samples_agg|safe}}");
+var jsamplesData = JSON.parse(samplesDataRaw);  // convert to a json
+var samplesData = jsamplesData[0].values;  // get the values
+google.charts.load("current", {packages:['corechart']});
+google.charts.setOnLoadCallback(function(){ drawBarChart(samplesData, "Sample Types", "samples-chart", true) });
+
+var samplesPresDataRaw = replaceSingleQuotes("{{request.session.search.samples_pres_agg|safe}}");
+var jsamplesPresData = JSON.parse(samplesPresDataRaw);  // convert to a json
+var samplesPresData = jsamplesPresData[0].values;  // get the values
+google.charts.load("current", {packages:['corechart']});
+google.charts.setOnLoadCallback(function(){ drawBarChart(samplesPresData, "Sample Preservation Methods", "samples-pres-chart", true) });
+
+
+var samplesSitesDataRaw = replaceSingleQuotes("{{request.session.search.samples_site_agg|safe}}");
+var jsamplesSitesData = JSON.parse(samplesSitesDataRaw);  // convert to a json
+var samplesSitesData = jsamplesSitesData[0].values;  // get the values
+google.charts.load("current", {packages:['corechart']});
+google.charts.setOnLoadCallback(function(){ drawPieChart(samplesSitesData, "Sample Sites", "site_chart") });
+
+
+
+// manage the collapse/expand icons
+
+$(document).ready(function() {
+  $('.collapse').on('shown.bs.collapse', function() {
+    console.log('shown event...');
+    $(this).parent().find('.fa-angle-down').removeClass('fa-angle-down').addClass('fa-angle-up');
+  }).on('hidden.bs.collapse', function() {
+    console.log('hide event...');
+    $(this).parent().find('.fa-angle-up').removeClass('fa-angle-up').addClass('fa-angle-down');
+  })
+});
+</script>
+
+{%endblock%}
+
+{%block body%}
+<div class="search-area">
+<div class="searchbar">
+      <span class="sample-labels">Search</span><br>
+     <span>You can search for specific Aurora sample IDs, BCR barcodes, etc (e.g., "AUR_01_01_06"), or use the <b>Additional Filters</b> to choose
+      from pre-defined search criteria. See <a id="documentation" href="#" onclick="$('#dialogdoc').dialog('open');">advanced query </a> documentation for other searching methods</span>
+      <div id="dialogdoc" class="card" title="Query Help" style="display:none;">
+         {% include 'components/query-info.html' %}        
+      </div>
+              <script>
+        $(function() {
+                                    $("#dialogdoc").dialog({
+                                                autoOpen: false,
+                                                show: {
+                                                            effect: "blind",
+                                                            duration: 1000
+                                                },
+                                        hide: {
+                                                    effect: "explode",
+                                                    duration: 1000
+                                        },
+                                                width:800,
+                                                height:900,
+                                                position: { my: "center", at: "center", of: window }
+                                    });
+                                    $("#documentation").on("click", function() {
+                                                $("#dialogdoc").dialog("open");
+                                    });
+                        });
+              </script>
+
+       <form id="search-form" class="my-4" name="search_form" action="{% url 'search' %}">
+        <input type="text" id="search-input" autocomplete="off"
+           data-provide="typeahead" name="q" title="Search for text or IDs (e.g., AUR_01_01_06)"
+           value="{{request.session.search.query}}" placeholder="Search for text or IDs (e.g., AUR_01_01_06)">           
+        <button id="search-btn" type="submit" class="btn btn-default">
+          <i class="fas fa-search"></i>
+        </button><br>        
+      </form>
+</div>
+{% if search.facets %}
+<div class="sidebar">     
+      <span class="sample-labels">Additional Filters</span>
+       <form id="facet-form-apply"> 
+        <b>To narrow your search, make your selection(s) below and press:</b>
+            <button id="search-btn" type="submit" class="btn btn-default" formaction="{% url 'submit_advanced' %}">
+              <i class="fas fa-filter"></i>
+              Apply
+            </button>
+            <button id="search-btn" type="submit" class="btn btn-default" formaction="{% url 'search' %}">
+              Clear
+            </button>
+
+        </form>    
+        <div id="facet-container">
+            <form id="facet-form" action="{% url 'advanced-filters' %}"> 
+             {% include "components/search-facets-accord.html" %}
+            </form>
+        </div>
+      <!--<hr class="d-sm-none">-->
+</div>   <!--search area-->
+{% endif %}
+<div class="resultarea">  
+  <table>
+    <tr>
+      <td><div id="samples-chart" style="width: 200px; height: 200px;"></div></td>
+      <td><div id="samples-pres-chart" style="width: 200px; height: 200px;"></div></td>
+      <td><div id="site_chart" style="width: 200px; height: 200px;"></div></td>      
+    </tr>
+  </table>
+  <hr>
+  {% if request.session.search.show_results == "True" %}
+    {% include "components/search-results.html" %}    
+  {% endif %}
+</div>
+
+
+<!--
+<div class="jumbotron text-center" style="margin-bottom:0">
+  <p>Footer</p>
+</div>
+-->
+</div>
+{% endblock %}
+
+

@@ -1,0 +1,15 @@
+{
+  "fields": {
+    "titles": {
+      "field_title": "Titles"
+    }
+  },
+  "facets": [
+    {
+      "name": "Titles",
+      "type": "terms",
+      "field_name": "titles",
+      "size": 10
+    }
+  ]
+}

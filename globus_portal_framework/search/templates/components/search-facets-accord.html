@@ -1,0 +1,40 @@
+<div id="accordian .tightwidth">
+{% for facet in search.facets %}
+<hr class="style1">
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="{{facet.field_name}}_h">
+        <h4>        
+            {% if forloop.first %}
+                <a class="facet-link" data-toggle="collapse" data-parent="accordian" href="#{{facet.field_name}}" aria-controls="{{facet.field_name}}" aria-expanded="true">{{facet.name}} <span class="arrow-rt"><i class="fas fa-angle-down"></i></span>
+                </a>
+            {% else %}
+                <a class="facet-link" data-toggle="collapse" data-parent="accordian" href="#{{facet.field_name}}" aria-controls="{{facet.field_name}}">{{facet.name}} <span class="arrow-rt"><i class="fas fa-angle-down"></i></span>
+                </a>
+            {% endif %}
+        </h4>         
+    </div>
+    {% if forloop.first %}
+        <div class="panel-collapse collapse show" id ="{{facet.field_name}}" role="tabpanel" aria-labelledby="{{facet.field_name}}_h" data-parent="#accordian">
+    {% else %}
+        <div class="panel-collapse collapse" id ="{{facet.field_name}}" role="tabpanel" aria-labelledby="{{facet.field_name}}_h" data-parent="#accordian">
+    {% endif %}
+        <div class="panel-body">
+        {% for field in facet.buckets %}
+            <div class="facet-field mr-3">
+                <input type="checkbox" name="filter.{{field.field_name}}"
+                    value="{{field.value}}" class="facet-checkbox mr-1"
+                    {# Reset page to 1 if user facets on a paginated search #}
+                    onchange="customSearch(1);" autocomplete="off"
+                    {% if field.checked %}
+                    checked
+                    {% endif %}
+                >
+            {{field.value|truncatechars:60}}<span style="float: right">({{field.count}})</span>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+</div>

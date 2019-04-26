@@ -1,0 +1,60 @@
+{% load humanize %}
+<script type="text/javascript">
+console.log("init javascript");
+      // Create an instance of mark.js and pass an argument containing
+// the DOM object of the context (where to search for matches)
+var markInstance = new Mark(document.querySelector(".context"));
+// Cache DOM elements
+var keywordInput = document.querySelector("input[name='search-input']");
+//var optionInputs = document.querySelectorAll("input[name='opt[]']");
+var checkbox = document.querySelector("highlight");
+checkbox.addEventListener("change", performMark);
+
+</script>
+<div id="search-result" class="search-result">
+{% if search.search_results  %}
+ <input type="checkbox" name="highlight" value="highlightSearch"> Highlight search word
+        <br>
+
+<h2>Found {{search.report_total|intcomma}} reports:</h2>
+  <table border = "1">
+<tr>
+    <th>
+    Subject ID
+  </th>
+  <th>
+    Report Text
+  </th>
+  <th>
+    Report Type
+  </th>  
+  <th>
+    Score
+  </th>
+
+</tr>  
+  {% endif %}
+
+  {% for result in search.report_results %}
+  <tr>
+      <td>
+        {{forloop.counter}}    <!--use this index instead of any identifiers-->
+    </td>
+      <td>
+        <div class="panel-body context">
+           <textarea rows = "50" cols = "100%">
+            {{result.content.rtext}}
+          </textarea>
+        </div>
+    </td>
+    <td>
+      {{result.content.rtype}}
+    </td>    
+    <td>
+      {{result.doc_score}}
+    </td>
+</tr>
+  {% endfor %}
+</table>
+
+</div>

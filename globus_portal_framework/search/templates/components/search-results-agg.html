@@ -1,0 +1,120 @@
+{% load humanize %}
+{% load staticfiles %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.6/nv.d3.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.2/d3.min.js"></script>
+<script src="{% static 'js/cr3-charts.js' %}"></script>
+<!--  OLD CHART
+<script src="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.min.js"></script>  
+<script src="{% static 'js/custom-nvd3.js' %}"></script>
+-->
+
+{% if request.session.search.aggregate.0.total > 0  %}
+
+<div class="results-info-text"><b>{{request.session.search.aggregate.0.total|intcomma}}</b> cases found</div>
+
+<!-- for <span class="result-query-text-color">&#034;{{request.session.search.query}}&#034;</span></div>-->
+<!--<div id="filters-text" class="filters-text"></div>-->
+
+{% else %}
+  {% if request.session.search.aggregate.0.total < 1 %}
+    <div class="results-info-text">No cases found for <span class="result-query-text-color">&#034;{{request.session.search.query}}&#034;</span></div>
+  {% endif %} 
+{% endif %}
+
+{% if request.session.search.aggregate  %}
+  <div class="chart-grid-container">     
+    <div id="age_chart"></div>
+    <!--
+    <div id="grid-item-top">
+      <p class="text-center font-weight-bold">Age Range at Diagnosis</p>    
+      <svg id="age-chart"></svg>
+    </div>     
+  -->
+    <div id="columnchart_material"></div>
+
+    <div class="chart-grid-sm-container">
+    <div id="gender_chart"></div>
+    <div id="vitals_chart"></div>
+    </div>
+<!--
+    <div class="grid-item">    
+      <p class="text-center font-weight-bold">Histology</p>
+      <svg id="histology-chart"></svg>
+    </div>      
+  -->
+<!--    
+    <div class="grid-item">
+      <p class="text-center font-weight-bold">Gender</p>
+      <svg id="gender-pie"></svg>
+    </div>
+-->    
+  </div>
+<!--    <div id="chart">
+        <p class="text-center font-weight-bold">Survival by ...</p>
+    <svg id="multibar"></svg>
+</div>
+-->
+<!--    
+  <div id="piechart">
+  </div>
+  -->
+{% endif %}
+
+<script>
+function replaceBrackets(p1) {
+      console.log(p1)
+      var s1 = p1.replace(/\[/g, '')
+      var s2 = s1.replace(/\]/g, '')
+    return s2
+}
+
+function replaceSingleQuotes(p1) {
+      var s1 = p1.replace(/\'/g, '"')
+    return s1
+}
+try{
+  var ageDataRaw = replaceSingleQuotes("{{request.session.search.aggregate|safe}}");
+  var jageData = JSON.parse(ageDataRaw);  // convert to a json
+  var ageData = jageData[0].values;  // get the values
+//console.log(ageData)
+
+  var histdataRaw = replaceSingleQuotes("{{request.session.search.histology|safe}}");
+  var jhistdata = JSON.parse(histdataRaw);
+  var histdata = jhistdata[0].values; 
+//console.log(histdata)
+
+// Gender data
+  var genderdataRaw = replaceSingleQuotes("{{request.session.search.gender|safe}}");
+  var jgenderdata = JSON.parse(genderdataRaw);
+  var genderdata = jgenderdata[0].values;
+
+// Vitals data
+  var vitalsdataRaw = replaceSingleQuotes("{{request.session.search.vitals|safe}}");
+  var jvitalsdata = JSON.parse(vitalsdataRaw);
+  var vitalsdata = jvitalsdata[0].values;
+
+
+// Age Range chart
+  google.charts.load("current", {packages:['corechart']});
+  google.charts.setOnLoadCallback(function(){ drawBarChart(ageData, "Age Range at Diagnosis", "age_chart") });
+
+// Histology breakdown chart
+  google.charts.load("current", {packages:['corechart','bar']});
+  google.charts.setOnLoadCallback(function(){ drawHorizontalBarChart(histdata) });
+
+// Gender
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(function(){ drawPieChart(genderdata, "Gender", "gender_chart") });
+
+// Vitals
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(function(){ drawPieChart(vitalsdata, "Vitals", "vitals_chart") });
+
+} catch(err) {
+  console.log(err)
+//  $("#chart svg").empty()
+}
+</script>

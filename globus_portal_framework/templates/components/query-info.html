@@ -1,0 +1,44 @@
+<p class="serif">
+<b><u>Boolean Operators</u></b><br>
+As with most computer languages, Elasticsearch supports the AND, OR, and NOT operators:<br>
+   - jack AND jill — Will return events that contain both jack and jill<br>
+   - ahab NOT moby — Will return events that contain ahab but not moby<br>
+   - tom OR jerry — Will return events that contain tom or jerry, or both<br>   
+<br>
+<b><u>Fields</u></b><br>
+You might be looking for events where a specific field contains certain terms. You specify that as follows:<br>
+  - name:”Ned Stark”<br>
+  <br>
+<i>Be careful with values with spaces such as “Ned Stark.” You’ll need to enclose it in double quotes to ensure that the whole value is used.</i>
+  <br>
+  Advanced search using multiple fields: e.g. site_code:C348 AND histology_code:80003<br>
+<div>
+  <p>*List of some available fields for query:<br>
+    <table>
+      <th>Field name</th>
+      <th>Description</th>
+      <th>Example</th>
+      <tr><td>dx_age</td><td>Age at Diagnosis</td><td>to find a specific range:  dx_age:[20 TO 25]</td></tr>
+      <tr><td>dx_year</td><td>Year of Diagnosis</td><td>to find a specific range:  dx_year:[2014 TO 2017]</td></tr>      
+      <tr><td>year_last_contact</td><td>Year of last contact</td><td>find a specific range:  year_last_contact:[2014 TO 2017]</td></tr>            
+      <tr><td>recurrence</td><td>Patient had some kind of recurrence</td><td>'Yes' or 'No' e.g,recurrence:"Yes"</td></tr>            
+      <tr><td>histology_code</td><td>Histology/morphology codes</td><td>see ICD-0-3 morphology codes e.g, histology_code:80003</td></tr>            
+      <tr><td>site_code</td><td>ICD-0-3 Site code</td><td>see ICD-0-3 site codes e.g, site_code:C348</td></tr>                  
+    </table>
+   </p>
+</div>
+<br>
+<b><u>Ranges</u></b><br>
+You can search for fields within a specific range, using square brackets for inclusive range searches and curly braces for exclusive range searches:<br>
+<br>
+ - age:[3 TO 10] — Will return events with age between 3 and 10<br>
+ - price:{100 TO 400} — Will return events with prices between 101 and 399<br>
+ - name: [Adam TO Ziggy] — Will return names between and including Adam and Ziggy<br>
+
+As you can see in the examples above, you can use ranges in non-numerical fields like strings and dates as well.<br>
+<br>
+<u>Wildcards, Regexes and Fuzzy Searching</u><br>
+The search would not be a search without wildcards. You can use the * character for multiple character wildcards or the ? character for single character wildcards:<br>
+  - Ma?s — Will match Mars, Mass, and Maps<br>
+  - Ma*s — Will match Mars, Matches, and Massachusetts<br>
+</p>

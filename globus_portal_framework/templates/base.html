@@ -1,0 +1,94 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+
+    {# CSS files #}
+<!--    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" /> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}" />
+
+    {# Custom Fonts #}
+    <script type="text/javascript" src="{% static 'js/fontawesome-all.min.js' %}"></script>    
+
+<!-- bootstrap 
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+-->
+
+<!-- Google charts -->
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<!-- custom charts -->  
+  <script src="{% static 'js/cr3-charts.js' %}"></script>
+  <script src="{% static 'js/search-utils.js' %}"></script>
+
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  
+
+<!--
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+-->
+    {# Django CSRF Protection #}
+    {% csrf_token %}
+
+    {# Extras #}
+    {%block headextras%}{%endblock%}
+
+    <title>{%block title%}{%endblock%}</title>
+
+  </head>
+  <body>
+<div id="pittlogo"><img src="/static/img/pitt.jpg" height="50px;"></div>
+<div class="jumbotron jumbotron-fluid text-center">
+  <h1>Aurora Data Discovery Portal</h1>
+ <h3>Metastatic Breast Cancer</h3>     
+ <!-- <hr class="my-4">  creates a hz line-->
+</div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="/"><i class="fa fa-home" aria-hidden="true"></i> Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto"></ul>
+          <ul class="navbar-nav my-lg-0">
+            {%if auth_enabled and request.user.is_authenticated %}
+          <!--  <li>
+              <a class="navbar-brand" href="/cohortreq">Make a Request  |</a>
+            </li>
+          -->
+            <li>
+              <a class="navbar-brand" href="{% url 'logout' %}?next=/">Logout  |</a>
+            </li>
+            <li>
+              <a class="navbar-brand" href="/search/">{{request.user.username }}</a>
+            </li>
+            {% elif auth_enabled %}
+            <li>
+              <a class="navbar-brand" href="{% url 'login' %}globus?next=/">Login</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page body -->
+    {%block body%}
+    {%endblock%}
+
+    <!-- Page footer -->
+    {% include 'components/footer.html' %}
+<!--    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>-->
+    <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>
