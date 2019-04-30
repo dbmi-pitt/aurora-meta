@@ -1,21 +1,21 @@
 {
   "fields": {
-    "dem_race": {
+    "clin.dem_race": {
       "field_title": "Race"
     },
-    "prim_stage_dx": {
+    "clin.prim_stage_dx": {
       "field_title": "Stage"
     },
-    "prim1_histology": {
+    "clin.tissue_prim1_histology": {
       "field_title": "Histology"
     },
-    "samples.sample.sample_info.preservation_method": {
+    "samples.sample_info.preservation_method": {
       "field_title": "Sample Preservation Method"
     },
-    "samples.sample.sample_info.sample_type": {
+    "samples.sample_info.sample_type": {
       "field_title": "Sample Types"
     },
-    "samples.sample.sample_info.sample_site": {
+    "samples.sample_info.sample_site": {
       "field_title": "Sample Sites"
     }
   },
@@ -23,91 +23,133 @@
     {
       "name": "Sample Types",
       "type": "terms",
-      "field_name": "samples.sample.sample_info.sample_type",
+      "field_name": "samples.sample_info.sample_type",
       "size": 10,
       "active": "true"
     },
     {
-      "name": "Sample Sites",
+      "name": "Sample Tissue Type",
       "type": "terms",
-      "field_name": "samples.sample.sample_info.sample_site",
+      "field_name": "samples.sample_info.tissue_type",
+      "size": 10,
+      "active": "true"
+    },
+    {
+      "name": "Sample Composition",
+      "type": "terms",
+      "field_name": "samples.sample_info.composition",
       "size": 10,
       "active": "true"
     },
     {
       "name": "Sample Preservation Method",
       "type": "terms",
-      "field_name": "samples.sample.sample_info.preservation_method",
+      "field_name": "samples.sample_info.preservation_method",
       "size": 10,
       "active": "true"
     },
     {
+      "name": "Sequencing Type",
+      "type": "terms",
+      "field_name": "samples.portion.analyte.aliquot.seq_info.seq_type",
+      "size": 10,
+      "active": "true"
+    },    
+    {
+      "name": "Sequencing Type (WES)",
+      "type": "terms",
+      "field_name": "samples.portion.analyte.aliquot.seq_info.WES.seq_type",
+      "size": 10,
+      "active": "true"
+    },
+    {
+      "name": "Sequencing Type (WGS)",
+      "type": "terms",
+      "field_name": "samples.portion.analyte.aliquot.seq_info.WGS.seq_type",
+      "size": 10,
+      "active": "true"
+    },
+    {
+      "name": "File Level",
+      "type": "terms",
+      "field_name": "samples.portion.analyte.aliquot.seq_info.files.level",
+      "size": 10,
+      "active": "true"
+    },    
+    {
+      "name": "File Types",
+      "type": "terms",
+      "field_name": "samples.portion.analyte.aliquot.seq_info.files.file_type",
+      "size": 10,
+      "active": "true"
+    },        
+    {
       "name": "Primary Tumor Histology",
       "type": "terms",
-      "field_name": "tissue_prim1_histology",
+      "field_name": "clin.tissue_prim1_histology",
       "size": 10,
       "active": "true"
     },    
     {
       "name": "Stage",
       "type": "terms",
-      "field_name": "prim_stage_dx",
+      "field_name": "clin.prim_stage_dx",
       "size": 10,
       "active": "true"
     },
     {
       "name": "Estrogen Receptor (ER)",
       "type": "terms",
-      "field_name": "prim_er",
+      "field_name": "clin.prim_er",
       "size": 10,
       "active": "true"
     },
     {
       "name": "Progesterone Receptor (PR)",
       "type": "terms",
-      "field_name": "prim_pr",
+      "field_name": "clin.prim_pr",
       "size": 10,
       "active": "true"
     },
     {
       "name": "HER2 Status",
       "type": "terms",
-      "field_name": "prim_her2_interpretation",
+      "field_name": "clin.prim_her2_interpretation",
       "size": 10,
       "active": "true"
     },
     {
       "name": "Tumor Final Resection",
       "type": "terms",
-      "field_name": "surgpath",
+      "field_name": "clin.surgpath",
       "size": 10,
       "active": "true"
     },
     {
       "name": "Radiation (Meta)",
       "type": "terms",
-      "field_name": "rads_metastatic_yn",
+      "field_name": "clin.rads_metastatic_yn",
       "size": 10,
       "active": "true"
     },
     {
       "name": "Chemotherapy (Met)",
       "type": "terms",
-      "field_name": "surgpath",
+      "field_name": "clin.surgpath",
       "size": 10,
       "active": "true"
     },
     {
       "name": "Neoadjuvant Treatment",
       "type": "terms",
-      "field_name": "na_text",
+      "field_name": "clin.na_text",
       "size": 10,
       "active": "true"
     },    
     {
       "name": "Neoadjuvant Chemo Regimen",
       "type": "terms",
-      "field_name": "na_chemo_type",
+      "field_name": "clin.na_chemo_type",
       "size": 10,
       "active": "true"
     },
@@ -115,7 +157,7 @@
     {
       "name": "Race",
       "type": "terms",
-      "field_name": "dem_race",
+      "field_name": "clin.dem_race",
       "size": 10,
       "active": "true"
     }

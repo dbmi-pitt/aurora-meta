@@ -117,7 +117,7 @@ def search(request):
             'filters': filters,
             'samples_agg': aggregate(context['search']['facets'], 'Sample Types'),
             'samples_pres_agg': aggregate(context['search']['facets'], 'Sample Preservation Method'),
-            'samples_site_agg': aggregate(context['search']['facets'], 'Sample Sites'),
+            'samples_site_agg': aggregate(context['search']['facets'], 'Sample Tissue Type'),
             'show_results': 'True'
 #            'aggregate': aggregate(context['search']['facets'], 'Age at Dx'),
 #            'histology': aggregate(context['search']['facets'], 'Histology'),
@@ -151,7 +151,7 @@ def search(request):
                 'filters': filters,
                 'samples_agg': aggregate(context['search']['facets'], 'Sample Types'),
                 'samples_pres_agg': aggregate(context['search']['facets'], 'Sample Preservation Method'),
-                'samples_site_agg': aggregate(context['search']['facets'], 'Sample Sites'),                
+                'samples_site_agg': aggregate(context['search']['facets'], 'Sample Tissue Type'),                
                 'show_results': 'False'
             }
 
@@ -300,7 +300,7 @@ def submit_advanced(request):
         'filters': filters,
         'samples_agg': aggregate(context['search']['facets'], 'Sample Types'),
         'samples_pres_agg': aggregate(context['search']['facets'], 'Sample Preservation Method'),
-        'samples_site_agg': aggregate(context['search']['facets'], 'Sample Sites'),        
+        'samples_site_agg': aggregate(context['search']['facets'], 'Sample Tissue Type'),        
         'show_results': 'True'
 #        'aggregate': aggregate(context['search']['facets'], 'Age at Dx'),
 #        'histology': aggregate(context['search']['facets'], 'Histology'),

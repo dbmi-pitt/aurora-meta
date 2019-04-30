@@ -52,88 +52,82 @@ function viewPortion(portion_id) {
 <div id="bioaccordion">
 {% for result in search.search_results %}
 <div>
-    <div class="card-header" id="{{result.content.patient_barcode}}_h">
+    <div class="card-header" id="{{result.content.clin.patient_barcode}}_h">
 
-        <button class="btn btn-link" data-toggle="collapse" data-target="#{{result.content.patient_barcode}}" aria-expanded="true" aria-controls="{{result.content.patient_barcode}}">
-          <i class="fas fa-user"></i>&nbsp;BCR Patient Barcode: {{result.content.patient_barcode}}&nbsp;|&nbsp;&nbsp;<i class="fas fa-flask"></i>&nbsp;Samples:&nbsp;{{result.content.samples.sample|length}}
+        <button class="btn btn-link" data-toggle="collapse" data-target="#{{result.content.clin.patient_barcode}}" aria-expanded="true" aria-controls="{{result.content.clin.patient_barcode}}">
+          <i class="fas fa-user"></i>&nbsp;BCR Patient Barcode: {{result.content.clin.patient_barcode}}&nbsp;|&nbsp;&nbsp;<i class="fas fa-flask"></i>&nbsp;Samples:&nbsp;{{result.content.samples|length}}
         </button>
 
     </div>
-     <div id="{{result.content.patient_barcode}}" class="collapse" aria-labelledby="{{result.content.patient_barcode}}_h" data-parent="#bioaccordion">
+     <div id="{{result.content.clin.patient_barcode}}" class="collapse" aria-labelledby="{{result.content.clin.patient_barcode}}_h" data-parent="#bioaccordion">
       <div class="card-body">
       <span class="sample-labels">Clinical</span>
       <table id="repdata">
         <tbody>
           <tr>
-            <td><span class="clinical-labels">BCR Patient Barcode:&nbsp;&nbsp;</span><span>{{result.content.patient_barcode}}</span></td>
-            <td><span class="clinical-labels">Deceased?:&nbsp;&nbsp;</span><span>{{result.content.dem_deceased}}</span></td>
+            <td><span class="clinical-labels">BCR Patient Barcode:&nbsp;&nbsp;</span><span>{{result.content.clin.patient_barcode}}</span></td>
+            <td><span class="clinical-labels">Deceased?:&nbsp;&nbsp;</span><span>{{result.content.clin.dem_deceased}}</span></td>
           </tr>          
           <tr>
-            <td><span class="clinical-labels">Race:&nbsp;&nbsp;</span><span>{{result.content.dem_race}}</span></td>
-            <td><span class="clinical-labels">Ethnicity:&nbsp;&nbsp;</span><span>{{result.content.dem_ethnicity}}</span></td>
+            <td><span class="clinical-labels">Race:&nbsp;&nbsp;</span><span>{{result.content.clin.dem_race}}</span></td>
+            <td><span class="clinical-labels">Ethnicity:&nbsp;&nbsp;</span><span>{{result.content.clin.dem_ethnicity}}</span></td>
           </tr>
           <tr>
-            <td><span class="clinical-labels">Primary:&nbsp;&nbsp;</span><span>{{result.content.tissue_prim1_histology}}</span></td>          
-            <td><span class="clinical-labels">BRCA 1/2 mutation?:&nbsp;&nbsp;</span><span>{{result.content.dem_brca}}</span></td>                        
+            <td><span class="clinical-labels">Primary:&nbsp;&nbsp;</span><span>{{result.content.clin.tissue_prim1_histology}}</span></td>          
+            <td><span class="clinical-labels">BRCA 1/2 mutation?:&nbsp;&nbsp;</span><span>{{result.content.clin.dem_brca}}</span></td>                        
           </tr>
           <tr>
-            <td><span class="clinical-labels">Stage:&nbsp;&nbsp;</span><span>{{result.content.prim_stage_dx}}</span></td>
-            <td><span class="clinical-labels">Path TNM:&nbsp;&nbsp;</span><span>{{result.content.ypt}}&nbsp;{{result.content.ypn}}&nbsp;{{result.content.ypm}}</span></td>
+            <td><span class="clinical-labels">Stage:&nbsp;&nbsp;</span><span>{{result.content.clin.prim_stage_dx}}</span></td>
+            <td><span class="clinical-labels">Path TNM:&nbsp;&nbsp;</span><span>{{result.content.clin.ypt}}&nbsp;{{result.content.clin.ypn}}&nbsp;{{result.content.clin.ypm}}</span></td>
           </tr>
           <tr>
-            <td><span class="clinical-labels">ER/PR Status:&nbsp;&nbsp;</span><span>{{result.content.prim_er}}/{{result.content.prim_pr}}</span></td>          
-            <td><span class="clinical-labels">HER2 Status:&nbsp;&nbsp;</span><span>{{result.content.prim_her2_interpretation}}</span></td>
+            <td><span class="clinical-labels">ER/PR Status:&nbsp;&nbsp;</span><span>{{result.content.clin.prim_er}}/{{result.content.clin.prim_pr}}</span></td>          
+            <td><span class="clinical-labels">HER2 Status:&nbsp;&nbsp;</span><span>{{result.content.clin.prim_her2_interpretation}}</span></td>
           </tr>
           <tr>
-            <td><span class="clinical-labels">Neoadjuvant Treatment:&nbsp;&nbsp;</span><span>{{result.content.na_txt}}</span></td>          
-            <td><span class="clinical-labels">Neoadjuvant Regimen:&nbsp;&nbsp;</span><span>{{result.content.na_chemo_type}}</span></td>          
+            <td><span class="clinical-labels">Neoadjuvant Treatment:&nbsp;&nbsp;</span><span>{{result.content.clin.na_txt}}</span></td>          
+            <td><span class="clinical-labels">Neoadjuvant Regimen:&nbsp;&nbsp;</span><span>{{result.content.clin.na_chemo_type}}</span></td>          
           </tr>
           <tr>
-            <td><span class="clinical-labels">Tumor Final Resection:&nbsp;&nbsp;</span><span>{{result.content.surgpath}}</span></td>
+            <td><span class="clinical-labels">Tumor Final Resection:&nbsp;&nbsp;</span><span>{{result.content.clin.surgpath}}</span></td>
           </tr>
           <tr>            
-            <td><span class="clinical-labels">Chemotherapy:&nbsp;&nbsp;</span><span>{{result.content.m1_chemotx}} 
-              {% if result.content.m1_chemo1_cycles|length > 0 %}   
-                &nbsp;&nbsp;({{result.content.m1_chemo1_cycles}} cycles)
+            <td><span class="clinical-labels">Chemotherapy:&nbsp;&nbsp;</span><span>{{result.content.clin.m1_chemotx}} 
+              {% if result.content.clin.m1_chemo1_cycles|length > 0 %}   
+                &nbsp;&nbsp;({{result.content.clin.m1_chemo1_cycles}} cycles)
               {% endif %}
             </span></td>
-            <td><span class="clinical-labels">Radiation:&nbsp;&nbsp;</span><span>{{result.content.rads_metastatic_yn}}</span></td>            
+            <td><span class="clinical-labels">Radiation:&nbsp;&nbsp;</span><span>{{result.content.clin.rads_metastatic_yn}}</span></td>            
           </tr>
 
         </tbody>
       </table>      
       <hr>
       <span class="sample-labels">Samples</span>
-      <table class="portion2">
+      <table class="minimalistBlack">
          <thead>
             <tr>
-              <th></th>
+              <th style="width: 20px;"></th>
               <th>BCR Sample Barcode</th>
               <th>Sample Identifier</th>
-              <th>Sample Site</th>
               <th>Sample Type</th>
               <th>Tissue Type</th>
               <th>Composition</th>
               <th>Preservation Method</th>
               <th># of Portions</th>
-              <th></th>
             </tr>
           </thead>
         <tbody>
-          {% for sample in result.content.samples.sample %}
+          {% for sample in result.content.samples %}
           <tr>
             <td><span><i class="fas fa-flask"></i></span></td>
             <td>{{sample.identifiers.bcr_sample_barcode}}</td>
             <td><span>{{sample.identifiers.aurora_sample_identifier}}</span></td>
-            <td><span>{{sample.sample_info.sample_site}}</span></td>
             <td><span>{{sample.sample_info.sample_type}}</span></td>
             <td><span>{{sample.sample_info.tissue_type}}</span></td>
             <td><span>{{sample.sample_info.composition}}</span></td>            
             <td><span>{{sample.sample_info.preservation_method}}</span></td>
-            <td>{{sample.portions.portion|length}}</td>
-            <td><span>
-              <button id="btn_{{sample.identifiers.bcr_sample_barcode}}" title="click to toggle portions panel"><i class="fas fa-list"></i>View</button>
-            </span></td>
+            <td>{{sample.portion|length}}&nbsp;&nbsp;<button id="btn_{{sample.identifiers.bcr_sample_barcode}}" title="click to toggle portions panel"><i class="fas fa-list"></i>Show/Hide</button></td>
             </tr>   
             <script>
                   $( "#btn_{{sample.identifiers.bcr_sample_barcode}}" ).click(function() {
@@ -141,55 +135,107 @@ function viewPortion(portion_id) {
                     $( "#portions_{{sample.identifiers.bcr_sample_barcode}}" ).toggle("slow");
                   });
             </script>
-          <td colspan="8">           
+          <td colspan="8" style="padding: 0px;">           
            <div id="portions_{{sample.identifiers.bcr_sample_barcode}}" style="display: none;"> <!--style="display: none;"-->
 
-            <table class="aliquot">
+            <table>
                     <tbody>
                          <thead>
-                          <tr>
+                          <tr bgcolor="#437FC9">
                           <th></th>
                           <th>Portion Barcode</th>
-                          <th>Aliquots</th>
+                          <th>Analytes</th>
                         </tr>
                       </thead>
-                      {% for po in sample.portions.portion %}
+                      {% for po in sample.portion %}
                       <tr>
                         <td class="counterlabel">{{forloop.counter}}</td>
                         <td>{{po.identifiers.bcr_portion_barcode}}</td>
                         <td>
-                          <table class="aliquot">
+                          <table>
                           <tbody>
                             <thead>
-                            <tr>
-                                <th>Aliquot Barcode</th>
-                                <th>Preservation Method</th>
-                                <th>Sequence Method</th>
-                                <th>Files</th>
+                            <tr bgcolor="#85acdb">
+                                <th>Analyte Barcode</th>
+                                <th>Analyte Type</th>
+                                <th>Aliquots</th>
                             </tr>
                             </thead>
-                            {% for al in po.analytes.analyte.aliquots.aliquot %}
+                            {% for al in po.analyte %}
                             <tr>
                                 <!--<td>{{forloop.counter}}</td>-->
-                                <td>{{al.identifiers.bcr_aliquot_barcode}}</td>
-                                <td>{{al.sample_info.preservation_method}}</td>
-                                <td>{% if al.seq_info.seq_method|length > 0 %} 
-                                      {{al.seq_info.seq_method}}
-                                    {% else %}
-                                      <span>None</span>
-                                    {% endif %}
-                                </td>
+                                <td>{{al.identifiers.bcr_analyte_barcode}}</td>
+                                <td>{{al.identifiers.analyte_type}}</td>
                                 <td>
-                                  {% if al.seq_info.files|length > 0 %}
-                                    <ul>
-                                    {% for f in al.seq_info.files %}
-                                      <li>{{f.level}}&nbsp;|&nbsp;{{f.file_type}}&nbsp;|&nbsp;<a href="#">{{f.file_name}}</a></li>
-                                    {% endfor %}
-                                    </ul>
-                                  {% else %}
-                                    <span>None</span>
-                                  {% endif %}
-                                </td>
+                                  <table>
+                                 <tbody>
+                                  <thead>
+                                    <tr bgcolor="#a7bad1">
+                                      <th>Aliquot Barcode</th>
+                                      <th>Analysis Type</th>
+                                      <th>Sequence Type</th>
+                                      <th>Files</th>
+                                    </tr>
+                                  </thead>                       
+                                  {% for aq in al.aliquot %}
+                                    {% if aq.seq_info.WES %}   <!-- check for a WES -->
+                                      <tr>
+                                        <td>{{aq.identifiers.bcr_aliquot_barcode}}</td>                                      
+                                          <td>{{aq.seq_info.WES.analysis_type}}</td>
+                                          <td>{{aq.seq_info.WES.seq_type}}</td>
+                                          <td>
+                                          {% if aq.seq_info.WES.files|length > 0 %}
+                                          <ul>
+                                            {% for f in aq.seq_info.WES.files %}
+                                              <li><b>{{f.level}}</b>&nbsp;|&nbsp;<b>{{f.file_type}}</b>&nbsp;|&nbsp;{{f.file_names}}</li>
+                                            {% endfor %}
+                                          </ul>
+                                          {% else %}
+                                            <span>None</span>
+                                          {% endif %}
+                                          </td>
+                                      </tr>
+                                    {% endif %}
+                                    {% if aq.seq_info.WGS %}   <!-- check for a WSG -->
+                                      <tr>
+                                        <td>{{aq.identifiers.bcr_aliquot_barcode}}</td>                                      
+                                          <td>{{aq.seq_info.WGS.analysis_type}}</td>
+                                          <td>{{aq.seq_info.WGS.seq_type}}</td>
+                                          <td>
+                                          {% if aq.seq_info.WGS.files|length > 0 %}
+                                          <ul>
+                                            {% for f in aq.seq_info.WGS.files %}
+                                              <li><b>{{f.level}}</b>&nbsp;|&nbsp;<b>{{f.file_type}}</b>&nbsp;|&nbsp;{{f.file_names}}</li>
+                                            {% endfor %}
+                                          </ul>
+                                          {% else %}
+                                            <span>None</span>
+                                          {% endif %}
+                                          </td>
+                                      </tr>
+                                    {% endif %}
+                                    {% if aq.seq_info.WES == None and aq.seq_info.WGS == None %}
+                                    <tr>
+                                      <td>{{aq.identifiers.bcr_aliquot_barcode}}</td>
+                                      <td>{{aq.seq_info.analysis_type}}</td>
+                                      <td>{{aq.seq_info.seq_type}}</td>
+                                      <td>
+                                        {% if aq.seq_info.files|length > 0 %}
+                                          <ul>
+                                            {% for f in aq.seq_info.files %}
+                                              <li><b>{{f.level}}</b>&nbsp;|&nbsp;<b>{{f.file_type}}</b>&nbsp;|&nbsp;{{f.file_names}}</li>
+                                            {% endfor %}
+                                          </ul>
+                                        {% else %}
+                                          <span>None</span>
+                                        {% endif %}
+                                      </td>
+                                    </tr>
+                                    {% endif %}
+                                  {% endfor %}
+                                </tbody>
+                                </table>
+                              </td>
                             </tr>
                             {% endfor %}
                           </tbody>

@@ -1240,7 +1240,7 @@ table.aliquot thead th:first-child {
 
 table.aliquot {
   font-family: Arial, Helvetica, sans-serif;
-  border: 1px solid #000000;
+/*  border: 1px solid #000000;*/
   background-color: #FFFFFF;
   width: 100%;
   text-align: left;
@@ -1257,7 +1257,7 @@ table.aliquot tr:nth-child(even) {
   background: #FFFFFF;
 }
 table.aliquot thead {
-  background: #3F0303;
+  background: #041760;/*#3F0303;*/
 }
 table.aliquot thead th {
   font-size: 11px;
@@ -1268,7 +1268,7 @@ table.aliquot thead th {
 }
 table.aliquot thead th:first-child {
   border-left: none;
-  background: #3F0303;  
+  background: #041760;  
 }
 
 table.aliquot tfoot {
@@ -1293,4 +1293,71 @@ table.aliquot tfoot .links a{
 
 .counterlabel {
     font-weight:bold;
+}
+
+
+
+table.greyGridTable {
+  border: 1px solid #FFFFFF;
+  width: 100%;
+  text-align: center;
+  border-collapse: collapse;
+}
+table.greyGridTable td, table.greyGridTable th {
+  border: 1px solid #FFFFFF;
+  padding: 1px 4px;
+}
+table.greyGridTable tbody td {
+  font-size: 12px;
+}
+table.greyGridTable thead {
+  background: #FFFFFF;
+  border-bottom: 2px solid #333333;
+}
+table.greyGridTable thead th {
+  font-size: 13px;
+  font-weight: bold;
+  color: #333333;
+  text-align: center;
+  border-left: 1px solid #333333;
+}
+table.greyGridTable thead th:first-child {
+  border-left: none;
+}
+
+table.greyGridTable tfoot td {
+  font-size: 14px;
+}
+
+table.minimalistBlack {
+  font-family: Verdana, Geneva, sans-serif;
+  border: 0px solid #000000;
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  padding: 0px;
+}
+table.minimalistBlack td, table.minimalistBlack th {
+  /*border: 1px solid #000000;*/
+}
+table.minimalistBlack tbody td {
+  font-size: 10px;
+}
+table.minimalistBlack thead {
+  background: #273e8e;
+  border-bottom: 1px solid #000000;
+}
+table.minimalistBlack thead th {
+  font-size: 12px;
+  font-weight: bold;
+  color: #FFFFFF;
+  text-align: center;
+  border-left: 1px solid #D0E4F5;
+}
+table.minimalistBlack thead th:first-child {
+  border-left: none;
+}
+
+table.minimalistBlack tfoot td {
+  font-size: 14px;
 }

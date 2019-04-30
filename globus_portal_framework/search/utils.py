@@ -47,6 +47,14 @@ def search_es(querystr):
 
     es = Elasticsearch([{'host': 'localhost', 'port': '9200'}])
 
+    tokens = querystr.split(" ")
+
+    if len(tokens) == 1 and querystr != "*":
+        if querystr.find("-"):
+            querystr = '\"' + str(querystr) + '\"'
+
+    print(querystr)
+
     # form basic query body
     body = { "from": 0, "size": 1000,
         "size": 1000,
@@ -273,7 +281,7 @@ def process_search_data(results):
         #print(entry)
         structured_results.append({
             #'subject': quote_plus(entry['_source']['REDCAP_ID']),     #['subject']),
-            'subject': entry['_source']['patient_id'],     #['subject']),
+            'subject': entry['_id'],     #['subject']),
             #'content': entry['_source']['content']
             'content': entry['_source'],   #['content']
             'doc_score': entry['_score']
