@@ -8,6 +8,7 @@ from importlib import import_module
 from urllib.parse import quote_plus, unquote
 import globus_sdk
 
+from globus_portal_framework import settings as g_settings
 from globus_portal_framework.search import settings
 from globus_portal_framework.transfer import settings as t_settings
 from globus_portal_framework.utils import load_globus_client
@@ -36,22 +37,28 @@ def post_search(index, query, filters, user=None, page=1, advanced=False):
             else:
                 query = adv_query
         gfilters = ""
-        
-        #print(query)
-    access_log.info('User: {} - Query: {}'.format(user, query))
+
+    # log all queries to access log
+    access_log.info('User: {} - Query: {}'.format(user, query))        
 
     return search_es(query)
 
 
 def search_es(querystr):
     result = []
+    es_url = ""
 
-    es = Elasticsearch([{'host': settings.ES_URL, 'port': settings.ES_PORT}])
+    if g_settings.DEBUG:
+        es_url = 'localhost'
+    else:
+        es_url = settings.ES_URL
+    
+    es = Elasticsearch([{'host': es_url, 'port': settings.ES_PORT}])
 
     tokens = querystr.split(" ")
 
     if len(tokens) == 1 and querystr != "*":
-        if querystr.find("-"):
+        if querystr.find("-") > -1:
             querystr = '\"' + str(querystr) + '\"'
 
     print(querystr)

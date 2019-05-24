@@ -12,10 +12,21 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+#SECURE_SSL_REDIRECT = True
+#SESSION_COOKIE_SECURE = True
+#CSRF_COOKIE_SECURE = True
 
-DEBUG = True
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/') 
+
+DEBUG = True 
+
+if DEBUG == False:
+    USE_X_FORWARDED_HOST = True
+    FORCE_SCRIPT_NAME = '/ddp'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -78,8 +89,8 @@ ROOT_URLCONF = 'globus_portal_framework.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'myproject', 'templates'),
+        'DIRS': [ STATIC_ROOT,
+            os.path.join(BASE_DIR, 'globus_portal_framework', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -124,14 +135,14 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': 'logs/app.log',
+            'filename': os.path.join(BASE_DIR, 'logs/app.log'),
             'formatter': 'detailed'
         },
         'access_log': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': 'logs/access.log',
-            'formatter': 'detailed'
+            'filename': os.path.join(BASE_DIR, 'logs/access.log'),
+            'formatter': 'audit'
         },
     },
     'formatters': {
@@ -142,6 +153,9 @@ LOGGING = {
             'format': 'Timestamp: %(asctime)s\nModule: %(module)s\n' \
             'Line: %(lineno)d\nMessage: %(message)s',
         },
+        'audit': {
+            'format': '%(asctime)s - %(message)s',
+        },        
     },
     'loggers': {
         'django': {
@@ -196,7 +210,7 @@ ENTRY_SERVICE_VARS_MAPPER = ('globus_portal_framework.search.utils', 'service_va
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
 
 # Override any settings here if a local_settings.py file exists
 try:

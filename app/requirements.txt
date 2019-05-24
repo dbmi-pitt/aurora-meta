@@ -1,4 +1,4 @@
-django>=2.0.1
+django
 # Globus SDK must be >1.4.1 otherwise search will throw errors
 globus_sdk
 # Currently need the latest development for search detail results, which
@@ -6,7 +6,6 @@ globus_sdk
 #-e git+https://github.com/globus/globus-sdk-python#egg=globus_sdk_python
 python-social-auth[django]>=0.3.6
 six
-oauthlib>=2.1.0
+# oauthlib==2.1.0
+oauthlib>=3.0.0
 elasticsearch
-pandas
-ijson

@@ -2,6 +2,7 @@ from os.path import join, dirname
 
 from django.conf import settings
 
+FORCE_SCRIPT_NAME = '/ddp'
 
 # "perfdata" search index
 SEARCH_INDEX = getattr(settings, 'SEARCH_INDEX', '')

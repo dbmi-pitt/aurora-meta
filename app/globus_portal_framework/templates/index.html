@@ -48,7 +48,8 @@
             </li>
             {% elif auth_enabled %}
             <li>
-              <a class="navbar-brand" href="{% url 'login' %}globus?next=/">Login</a>
+              <!-- <a class="navbar-brand" href="{% url 'login' %}globus?next=/">Login</a> -->
+              <a class="navbar-brand" href="{% url 'social:begin' 'globus' %}?next={{ request.get_full_path|urlencode }}">Login</a>
             </li>
             {% endif %}
           </ul>
@@ -62,7 +63,7 @@
 <div class="h-center">
   You have successfully logged in and can now begin searching the repository.<br> 
   <span>
-  <a class="large" href="/search">Get Started</a>
+  <a class="large" href="{% url 'search' %}">Get Started</a>
 </span>
 </div>
 {% endif %}
