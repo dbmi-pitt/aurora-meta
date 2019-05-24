@@ -24,3 +24,7 @@ touched most files here.
 * `docker build -t ddp .`
 * `docker run -d -p 4435:4435 --net=data-portal_default --name ddp ddp`
 
+## Elasticsearch
+Use docker-compose file to build a es-based container
+/elasticsearch/docker-compose.yml
+
