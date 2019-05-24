@@ -48,10 +48,10 @@ function viewPortion(portion_id) {
 }
 </script>
 
-<span class="sample-labels">Found data associated with {{search.result_total|intcomma}} patient(s)&nbsp;&nbsp;|&nbsp;&nbsp;<i class="fas fa-download" title="Download List to CSV"></i></span>  
-<div id="bioaccordion">
+<span class="sample-labels">Found data associated with {{search.result_total.value|intcomma}} patient(s)&nbsp;&nbsp;|&nbsp;&nbsp;<i class="fas fa-download" title="Download List to CSV"></i></span>  
+<div class="resultscroll">
 {% for result in search.search_results %}
-<div>
+<!-- <div> -->
     <div class="card-header" id="{{result.content.clin.patient_barcode}}_h">
 
         <button class="btn btn-link" data-toggle="collapse" data-target="#{{result.content.clin.patient_barcode}}" aria-expanded="true" aria-controls="{{result.content.clin.patient_barcode}}">
@@ -253,7 +253,7 @@ function viewPortion(portion_id) {
       </table>
     </div>
     </div>
-</div>    
+<!--</div>    -->
 {% endfor %}
 </div>
 

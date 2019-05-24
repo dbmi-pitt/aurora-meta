@@ -127,10 +127,16 @@ LOGGING = {
             'filename': 'logs/app.log',
             'formatter': 'detailed'
         },
+        'access_log': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/access.log',
+            'formatter': 'detailed'
+        },
     },
     'formatters': {
         'detailed': {
-            'format': '%(levelname)-3s %(message)s',
+            'format': '%(asctime)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s',
         },
         'email': {
             'format': 'Timestamp: %(asctime)s\nModule: %(module)s\n' \
@@ -151,6 +157,11 @@ LOGGING = {
                     },
         'globus_portal_framework': {
             'handlers': ['stream', 'file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+         'access_logger': {
+            'handlers': ['stream','access_log'],
             'level': 'INFO',
             'propagate': True,
         }

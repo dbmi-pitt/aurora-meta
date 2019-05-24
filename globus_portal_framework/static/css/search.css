@@ -209,7 +209,7 @@ div.card {
 .search-area{
   display:grid;
   grid-template-columns:20% 1fr;
-  grid-template-areas:"searchbar resultarea"
+  grid-template-areas:"searchbar chartbar"
                       "sidebar resultarea"
                       "sidebar resultarea";
   margin:20px; 
@@ -229,7 +229,13 @@ div.card {
 .resultarea{
   grid-area:resultarea;
   min-height:100px;
+  overflow: auto;
+  max-height: 90vh;    
 }
+.chartbar {
+  grid-area:chartbar;  
+}
+
 .sidebar {
   grid-area:sidebar;
   border:solid 1px #dbdbdb;     
@@ -904,93 +910,7 @@ table#repdata td {
 	padding:2px;
 }
 
-table.samples2 {
-  font-family: Arial, Helvetica, sans-serif;
-  border: 0px solid #1C6EA4;
-  width: 100%;
-  text-align: left;
-  border-collapse: collapse;
-}
-table.samples2 td, table.samples2 th {
-  border: 1px solid #AAAAAA;
-  padding: 1px 4px;
-}
-table.samples2 tbody td {
-  font-size: 12px;
-}
-table.samples2 tr:nth-child(even) {
-  background: #D0E4F5;
-}
-table.samples2 thead {
-  background: #1C6EA4;
-  border-bottom: 2px solid #444444;
-}
-table.samples2 thead th {
-  font-size: 13px;
-  font-weight: bold;
-  color: #FFFFFF;
-  border-left: 2px solid #D0E4F5;
-}
-table.samples2 thead th:first-child {
-  border-left: none;
-}
-
-table.samples2 tfoot td {
-  font-size: 14px;
-}
-table.samples2 tfoot .links {
-  text-align: right;
-}
-table.samples2 tfoot .links a{
-  display: inline-block;
-  background: #1C6EA4;
-  color: #FFFFFF;
-  padding: 2px 8px;
-  border-radius: 5px;
-}
-
-
-table.samples3 {
-  border: 2px solid #FFFFFF;
-  width: 100%;
-  text-align: center;
-  border-collapse: collapse;
-}
-table.samples3 td, table.samples3 th {
-  border: 1px solid #FFFFFF;
-  padding: 3px 4px;
-}
-table.samples3 tbody td {
-  font-size: 12px;
-}
-table.samples3 td:nth-child(even) {
-  background: #EBEBEB;
-}
-table.samples3 thead {
-  background: #FFFFFF;
-  border-bottom: 4px solid #333333;
-}
-table.samples3 thead th {
-  font-size: 11px;
-  font-weight: bold;
-  color: #333333;
-  text-align: center;
-  border-left: 2px solid #333333;
-}
-table.samples3 thead th:first-child {
-  border-left: none;
-}
-
-table.samples3 tfoot {
-  font-size: 10px;
-  font-weight: bold;
-  color: #333333;
-  border-top: 4px solid #333333;
-}
-table.samples3 tfoot td {
-  font-size: 10px;
-}
-
+/*
 table.minimalistBlack {
   border: 1px solid #000000;
   width: 100%;
@@ -1002,343 +922,18 @@ table.minimalistBlack td, table.minimalistBlack th {
   border: 1px solid #000000;
   padding: 5px 4px;
 }
-table.minimalistBlack tbody td {
-  font-size: 10px;
-}
-
-/* Portion table */
-table.portions {
-  border: 1px solid #FFFFFF;
-  width: 100%;
-  text-align: left;  
-}
-table.portions td, table.portions th {
-  border: 1px solid #FFFFFF;
-  padding: 1px 1px;
-}
-table.portions tbody td {
-  font-size: 11px;
-}
-table.portions thead {
-  background: #FFFFFF;
-  border-bottom: 1px solid #333333;
-}
-table.portions thead th {
-  font-size: 11px;
-  font-weight: bold;
-  text-align: center;
-  border-left: 1px solid #333333;
-}
-table.portions thead th:first-child {
-  border-left: none;
-}
-
-table.portions tfoot td {
-  font-size: 14px;
-}
-
-table.portions1 {
-  border: 2px solid #FFFFFF;
-  width: 100%;
-  text-align: center;
-  border-collapse: collapse;
-}
-table.portions1 td, table.portions1 th {
-  border: 1px solid #FFFFFF;
-  padding: 3px 4px;
-}
-table.portions1 tbody td {
-  font-size: 12px;
-}
-table.portions1 tr:nth-child(even) {
-  background: blue;
-}
-table.portions1 thead {
-  background: #FFFFFF;
-  border-bottom: 2px solid #333333;
-}
-table.portions1 thead th {
-  font-size: 12px;
-  font-weight: bold;
-  color: #333333;
-  text-align: center;
-  border-left: 1px solid #333333;
-}
-table.portions1 thead th:first-child {
-  border-left: none;
-}
-
-
-/*
-table.portions2 {
-  border: 2px solid #FFFFFF;
-  width: 100%;
-  text-align: center;
-  border-collapse: collapse;
-}
-table.portions2 td, table.portions2 th {
-  border: 1px solid #FFFFFF;
-  padding: 3px 4px;
-}
-table.portions2 tbody td {
-  font-size: 12px;
-}
-table.portions2 tr:nth-child(even) {
-  background: green;
-}
-table.portions2 thead {
-  background: #FFFFFF;
-  border-bottom: 2px solid #333333;
-}
-table.portions2 thead th {
-  font-size: 12px;
-  font-weight: bold;
-  color: #333333;
-  text-align: center;
-  border-left: 1px solid #333333;
-}
-table.portions2 thead th:first-child {
-  border-left: none;
-}
-
-NEW
-
-table.portion2 {
-  border: 2px solid #A40808;
-  background-color: #EEE7DB;
-  width: 100%;
-  text-align: center;
-  border-collapse: collapse;
-}
-table.portion2 td, table.portion2 th {
-  border: 1px solid #AAAAAA;
-  padding: 3px 2px;
-}
-table.portion2 tbody td {
-  font-size: 11px;
-}
-table.portion2 tr:nth-child(even) {
-  background: #F5C8BF;
-}
-table.portion2 thead {
-  background: #A40808;
-}
-table.portion2 thead th {
-  font-size: 12px;
-  font-weight: bold;
-  color: #FFFFFF;
-  text-align: center;
-  border-left: 2px solid #A40808;
-}
-table.portion2 thead th:first-child {
-  border-left: none;
-}
-
-table.portion2 tfoot {
-  font-size: 13px;
-  font-weight: bold;
-  color: #FFFFFF;
-  background: #A40808;
-}
-table.portion2 tfoot td {
-  font-size: 13px;
-}
-table.portion2 tfoot .links {
-  text-align: right;
-}
-table.portion2 tfoot .links a{
-  display: inline-block;
-  background: #FFFFFF;
-  color: #A40808;
-  padding: 2px 8px;
-  border-radius: 5px;
-}
 */
-
-table.portion2 {
-  border: 1px solid #000000;
-  background-color: #EEE7DB;
-  width: 90%;
-  text-align: center;
-  border-collapse: collapse;
-}
-table.portion2 td, table.portion2 th {
-  border: 1px solid #AAAAAA;
-  padding: 3px 2px;
-}
-table.portion2 tbody td {
-  font-size: 11px;
-}
-table.portion2 tr:nth-child(even) {
-  background: #F7F7F7;
-}
-table.portion2 thead {
-  background: #3F0303;
-}
-table.portion2 thead th {
-  font-size: 12px;
-  font-weight: bold;
-  color: #FFFFFF;
-  text-align: center;
-  border-left: 1px solid #A40808;
-}
-table.portion2 thead th:first-child {
-  border-left: none;
-}
-
-table.portion2 tfoot {
-  font-size: 9px;
-  font-weight: bold;
-  color: #FFFFFF;
-  background: #3F0303;
-}
-table.portion2 tfoot td {
-  font-size: 9px;
-}
-table.portion2 tfoot .links {
-  text-align: right;
-}
-table.portion2 tfoot .links a{
-  display: inline-block;
-  background: #FFFFFF;
-  color: #A40808;
-  padding: 2px 8px;
-  border-radius: 5px;
-}
-/*
-table.aliquot {
-  border: 2px solid #FFFFFF;
-  width: 100%;
-  text-align: center;
-  border-collapse: collapse;
-}
-table.aliquot td, table.portions2 th {
-  border: 1px solid #FFFFFF;
-  padding: 3px 4px;
-}
-table.aliquot tbody td {
-  font-size: 10px;
-}
-table.aliquot tr:nth-child(even) {
-  background: #F7F7F7;
-}
-table.aliquot thead {
-  background: #FFFFFF;
-  border-bottom: 2px solid #333333;
-}
-table.aliquot thead th {
-  font-size: 11px;
-  font-weight: bold;
-  color: #333333;
-  text-align: center;
-  border-left: 1px solid #333333;
-}
-table.aliquot thead th:first-child {
-  border-left: none;
-}
-*/
-
-table.aliquot {
-  font-family: Arial, Helvetica, sans-serif;
-/*  border: 1px solid #000000;*/
-  background-color: #FFFFFF;
-  width: 100%;
-  text-align: left;
-  border-collapse: collapse;
-}
-table.aliquot td, table.aliquot th {
-  border: 1px solid #AAAAAA;
-  padding: 3px 2px;
-}
-table.aliquot tbody td {
-  font-size: 10px;
-}
-table.aliquot tr:nth-child(even) {
-  background: #FFFFFF;
-}
-table.aliquot thead {
-  background: #041760;/*#3F0303;*/
-}
-table.aliquot thead th {
-  font-size: 11px;
-  font-weight: bold;
-  color: #FFFFFF;
-  text-align: center;
-  border-left: 1px solid #F4F4F4;
-}
-table.aliquot thead th:first-child {
-  border-left: none;
-  background: #041760;  
-}
-
-table.aliquot tfoot {
-  font-size: 13px;
-  font-weight: bold;
-  color: #FFFFFF;
-  background: #A40808;
-}
-table.aliquot tfoot td {
-  font-size: 13px;
-}
-table.aliquot tfoot .links {
-  text-align: right;
-}
-table.aliquot tfoot .links a{
-  display: inline-block;
-  background: #FFFFFF;
-  color: #A40808;
-  padding: 2px 8px;
-  border-radius: 5px;
-}
-
-.counterlabel {
-    font-weight:bold;
-}
-
-
-
-table.greyGridTable {
-  border: 1px solid #FFFFFF;
-  width: 100%;
-  text-align: center;
-  border-collapse: collapse;
-}
-table.greyGridTable td, table.greyGridTable th {
-  border: 1px solid #FFFFFF;
-  padding: 1px 4px;
-}
-table.greyGridTable tbody td {
-  font-size: 12px;
-}
-table.greyGridTable thead {
-  background: #FFFFFF;
-  border-bottom: 2px solid #333333;
-}
-table.greyGridTable thead th {
-  font-size: 13px;
-  font-weight: bold;
-  color: #333333;
-  text-align: center;
-  border-left: 1px solid #333333;
-}
-table.greyGridTable thead th:first-child {
-  border-left: none;
-}
-
-table.greyGridTable tfoot td {
-  font-size: 14px;
-}
-
 table.minimalistBlack {
   font-family: Verdana, Geneva, sans-serif;
-  border: 0px solid #000000;
+  border: 1px solid #000000;
   width: 100%;
   text-align: left;
   border-collapse: collapse;
   padding: 0px;
 }
 table.minimalistBlack td, table.minimalistBlack th {
-  /*border: 1px solid #000000;*/
+  border: 1px solid #000000;
+  padding: 5px 4px;  
 }
 table.minimalistBlack tbody td {
   font-size: 10px;

@@ -3,6 +3,9 @@ from django.utils import timezone
 import globus_sdk
 from django.conf import settings
 from globus_portal_framework.exc import ExpiredGlobusToken
+import logging
+
+access_log = logging.getLogger('access_logger')
 
 def validate_token(tok):
     """Validate if the given token is active.
@@ -16,7 +19,10 @@ def validate_token(tok):
 
 
 def load_globus_access_token(user, token_name):
+    print('access_token')
     if user.is_authenticated:
+        print('User {} has been authorized'.format(user))
+        access_log.info('User {} has been authorized'.format(user))
         tok_list = user.social_auth.get(provider='globus').extra_data
         if token_name == 'auth.globus.org':
             return tok_list['access_token']
@@ -30,6 +36,7 @@ def load_globus_access_token(user, token_name):
                     raise ExpiredGlobusToken(token_name=token_name)
                 return service_token['access_token']
             else:
+                access_log.info('User {} not authorized'.format(user))
                 raise ValueError('Attempted to load {} for user {}, but no '
                                  'tokens existed with the name {}, only {}'
                                  ''.format(token_name, user, token_name,
@@ -55,10 +62,12 @@ def load_globus_client(user, client, token_name, require_authorized=False):
     """
     token = load_globus_access_token(user, token_name)
     if token:
+        access_log.info('User {} has been authorized'.format(user))
         return client(authorizer=globus_sdk.AccessTokenAuthorizer(token))
     elif not require_authorized:
         return client()
     else:
+        access_log.info('User {} has not been authorized for {}'.format(user, client))
         raise ValueError(
             'User {} has not been authorized for {}'.format(user, client))
 

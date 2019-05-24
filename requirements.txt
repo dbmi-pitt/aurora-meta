@@ -8,3 +8,5 @@ python-social-auth[django]>=0.3.6
 six
 oauthlib>=2.1.0
 elasticsearch
+pandas
+ijson

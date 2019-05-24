@@ -7,6 +7,11 @@ from django.conf import settings
 SEARCH_INDEX = getattr(settings, 'SEARCH_INDEX', '')
 SEARCH_INDEX_REPORT = getattr(settings, 'SEARCH_INDEX_REPORT', '')
 #                       '5e83718e-add0-4f06-a00d-577dc78359bc')
+
+# Local Elasticsearch instance
+ES_URL = getattr(settings, 'ES_URL', '')
+ES_PORT = getattr(settings, 'ES_PORT', '')
+
 SEARCH_MAPPER = getattr(settings, 'SEARCH_MAPPER',
                         ('globus_portal_framework', 'default_search_mapper'))
 SEARCH_SCHEMA = getattr(settings, 'SEARCH_SCHEMA',

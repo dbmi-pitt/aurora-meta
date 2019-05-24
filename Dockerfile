@@ -3,19 +3,22 @@ FROM python:3
 
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir /cr3
+RUN mkdir /ddp
 
-WORKDIR /cr3
+WORKDIR /ddp
 
-ADD requirements.txt /cr3/
+ADD requirements.txt /ddp/
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-ADD . /cr3/
+ADD . /ddp/
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
+
+# collect all the static media
+RUN python /ddp/manage.py collectstatic --noinput
 
 # Run app.py when the container launches
 #CMD ["python", "manage.py", "runserver"]

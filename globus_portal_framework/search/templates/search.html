@@ -152,7 +152,7 @@ $(document).ready(function() {
       <!--<hr class="d-sm-none">-->
 </div>   <!--search area-->
 {% endif %}
-<div class="resultarea">  
+<div class="chartbar">  
   <table>
     <tr>
       <td><div id="samples-chart" style="width: 380px; height: 200px;"></div></td>
@@ -161,10 +161,13 @@ $(document).ready(function() {
     </tr>
   </table>
   <hr>
+</div>  
+<div class="resultarea">  
   {% if request.session.search.show_results == "True" %}
     {% include "components/search-results.html" %}    
   {% endif %}
 </div>
+
 
 
 <!--

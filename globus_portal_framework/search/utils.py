@@ -14,7 +14,7 @@ from globus_portal_framework.utils import load_globus_client
 from elasticsearch import Elasticsearch
 
 log = logging.getLogger(__name__)
-
+access_log = logging.getLogger('access_logger')
 
 def load_json_file(filename):
     with open(filename) as f:
@@ -38,6 +38,7 @@ def post_search(index, query, filters, user=None, page=1, advanced=False):
         gfilters = ""
         
         #print(query)
+    access_log.info('User: {} - Query: {}'.format(user, query))
 
     return search_es(query)
 
@@ -45,7 +46,7 @@ def post_search(index, query, filters, user=None, page=1, advanced=False):
 def search_es(querystr):
     result = []
 
-    es = Elasticsearch([{'host': 'localhost', 'port': '9200'}])
+    es = Elasticsearch([{'host': settings.ES_URL, 'port': settings.ES_PORT}])
 
     tokens = querystr.split(" ")
 
@@ -92,7 +93,7 @@ def search_es(querystr):
         #q = "content." + q
         #print(q)
         res = es.search(index=settings.SEARCH_INDEX, body=body)
-        print("ES: %d documents found" % res['hits']['total'])
+#        print("ES: %d documents found" % res['hits']['total'])
         #print(res['hits']['hits'])
         #print(res)
         gfilters = {}
