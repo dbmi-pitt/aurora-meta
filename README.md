@@ -21,16 +21,10 @@ touched most files here.
 
 ### Build and run
 #### Build with python3
-* `docker build -t cr3 .`
-* `docker run -d -p 80:80 -p 443:443 --name cr3 cr3`
-* go to 127.0.0.1 to see if works
+* `docker build -t ddp .`
+* `docker run -d -p 4435:4435 --net=data-portal_default --name ddp ddp`
 
-### How to insert your application
+## Elasticsearch
+Use docker-compose file to build a es-based container
+/elasticsearch/docker-compose.yml
 
-In /app currently a django project is created with startproject. You will
-probably want to replace the content of /app with the root of your django
-project. Then also remove the line of django-app startproject from the 
-Dockerfile
-
-uWSGI chdirs to /app so in uwsgi.ini you will need to make sure the python path
-to the wsgi.py file is relative to that.
