@@ -2,12 +2,25 @@
 {% load static %}
 {% load search_extras %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'css/jsonTree.css' %}" />
-<script src="{% static 'js/jsonTree.js' %}"></script>
 
 <script>
-  function replaceSingleQuotes(p1) {
+function replaceSingleQuotes(p1) {
       var s1 = p1.replace(/\'/g, '"')
+    return s1
+}
+
+function replaceQuotes(p1) {
+      var s1 = p1.replace(/\'/g, '')
+    return s1
+}
+
+function replaceCommas(p1) {
+      var s1 = p1.replace(/,/g,';')
+    return s1
+}
+
+function replaceEndStuff(p1) {
+      var s1 = p1.replace(/\n/g,'')
     return s1
 }
 
@@ -46,10 +59,119 @@ function viewPortion(portion_id) {
         x.style.display = "none";
     }
 }
-</script>
 
-<span class="sample-labels">Found data associated with {{search.result_total.value|intcomma}} patient(s)&nbsp;&nbsp;</span>  
-<!--<i class="fas fa-download" title="Download List to CSV"></i>-->
+function convertToCSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+    var str = '';
+    for (var i = 0; i < array.length; i++) {
+      var line = '';
+      for (var index in array[i]) {
+        if (line != '') line += ','
+        line += array[i][index];
+      }
+      str += line + '\r\n';
+    }
+    return str;
+}
+function exportCSVFile(specHeaders, items, fileTitle) {
+    if (specHeaders) {
+      items.unshift(specHeaders);
+    }
+    // Convert Object to JSON
+    var jsonObject = JSON.stringify(items);
+    var csv = this.convertToCSV(jsonObject);
+    var exportedFilenmae = fileTitle + '.csv' || 'export.csv';
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    if (navigator.msSaveBlob) { // IE 10+
+      navigator.msSaveBlob(blob, exportedFilenmae);
+    } else {
+      var link = document.createElement("a");
+      if (link.download !== undefined) { // feature detection
+        // Browsers that support HTML5 download attribute
+        var url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", exportedFilenmae);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+}
+</script>
+{% if search.search_results  %}
+<script>
+
+/* NEED A BETTER SOLUTION FOR EXPORTING!!!  */
+  var specFormatted = [{% for result in search.search_results %}
+          {% for sample in result.content.samples %}
+           {
+              patient_barcode: '{{ result.content.clin.patient_barcode }}',
+              bcr_sample_barcode:  '{{ sample.identifiers.bcr_sample_barcode }}',
+              aurora_sample_identifier: '{{ sample.identifiers.aurora_sample_identifier }}',
+              sample_type: '{{ sample.sample_info.sample_type }}',
+              composition: '{{sample.sample_info.composition}}',
+              preservation_method: '{{sample.sample_info.preservation_method}}'
+            },
+          {% endfor %}
+          {% if forloop.last %}
+            ];
+          {% endif %}
+          {% endfor %}
+
+
+  var analyteFormatted = [ {% for result in search.search_results %}
+          {% for sample in result.content.samples %}
+          {% for po in sample.portion %}
+           {% for al in po.analyte %}
+           {% for aq in al.aliquot %}
+           {
+              patient_barcode: '{{ result.content.clin.patient_barcode }}',
+              bcr_sample_barcode:  '{{ sample.identifiers.bcr_sample_barcode }}',
+              bcr_analyte_barcode: '{{ al.identifiers.bcr_analyte_barcode }}',
+              analyte_type:  '{{ al.identifiers.analyte_type }}',
+              bcr_aliquot_barcode: '{{aq.identifiers.bcr_aliquot_barcode}}',
+              seq_type: '{{aq.seq_info.seq_type}}',
+              seq_files: replaceEndStuff(replaceCommas(replaceQuotes("{{aq.seq_info.files|safe}}")))
+            },
+           {% endfor %}
+          {% endfor %}
+          {% endfor %}
+          {% endfor %}
+          {% if forloop.last %}
+            ];
+          {% endif %}
+          {% endfor %}
+
+
+  var specHeaders = {
+        patient_barcode: "Patient Barcode",
+        bcr_sample_barcode: "BCR Sample Barcode",
+        aurora_sample_identifier: "Aurora Sample Identifier",
+        sample_type: "Sample Type",
+        composition: "Composition",
+        preservation_method: "Preservation Method"
+      };
+
+  var analyteHeaders = {
+        patient_barcode: "Patient Barcode",
+        bcr_sample_barcode: "BCR Sample Barcode",    
+        bcr_analyte_barcode: "Analyte Barcode",
+        analyte_type: "Analyte Type",
+        bcr_aliquot_barcode: "BCR Aliquot Barcode",
+        seq_type: "Sequence Type",
+        seq_files: "Files"
+      };
+
+
+</script>
+{% endif %}
+<div>
+<span class="sample-labels">{{search.result_total|intcomma}} cases&nbsp;&nbsp;</span>
+<div class="float-right">
+<button id="download" type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(specHeaders, specFormatted, 'aurora_samples')"><i class="fas fa-download"></i>&nbsp;&nbsp;Biospecimen</button>&nbsp;&nbsp;<button id="download" type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(analyteHeaders, analyteFormatted, 'aurora_analyte')"><i class="fas fa-download"></i>&nbsp;&nbsp;Analytes</button>
+</div>
+<hr>
 <div class="resultscroll">
 {% for result in search.search_results %}
 <!-- <div> -->
@@ -257,5 +379,7 @@ function viewPortion(portion_id) {
 <!--</div>    -->
 {% endfor %}
 </div>
-
+{% if search.result_total > 20 %}
+<div>
+{% endif %}
 
