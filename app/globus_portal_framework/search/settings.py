@@ -30,3 +30,6 @@ SEARCH_MAX_PAGES = getattr(settings, 'SEARCH_MAX_PAGES', 30)
 # session. "*" will automatically search everything, but may not be desirable
 # if there is a lot of search data in the index, as searches will take a while
 DEFAULT_QUERY = getattr(settings, 'DEFAULT_QUERY', '')
+
+LOGIN_URL = 'login'
+

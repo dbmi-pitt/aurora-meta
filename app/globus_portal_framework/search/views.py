@@ -4,6 +4,7 @@ from os.path import basename
 from urllib.parse import unquote
 import globus_sdk
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib import messages
 from django.http import HttpResponse
@@ -19,8 +20,12 @@ from globus_portal_framework import (preview, helper_page_transfer,
 
 log = logging.getLogger(__name__)
 
-def index(request):
+def index(request):    
     context = {}
+
+    if not request.user.is_authenticated:
+        return redirect('%s/globus?next=%s' % (settings.LOGIN_URL, request.path))
+
     return render(request, 'index.html', context)
 
 def searchBAK(request):
