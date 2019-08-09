@@ -4,8 +4,8 @@ from globus_portal_framework.search.views import (index, detail, search,
                                                   detail_transfer,                                                 
                                                   detail_preview,
                                                   cohort_request,
-                                                  submit_advanced,
-                                                  advanced_filters)
+                                                  submit_advanced
+                                                  )
 
 urlpatterns = [
     # We will likely use this at some point
@@ -21,6 +21,6 @@ urlpatterns = [
     path('', index, name='index'),
     path('search/', search, name='search'),
     path('submit-advanced/', submit_advanced, name='submit_advanced'),
-    path('advanced-filters/', advanced_filters, name='advanced-filters')
+#    path('advanced-filters/', advanced_filters, name='advanced-filters')
     
 ]

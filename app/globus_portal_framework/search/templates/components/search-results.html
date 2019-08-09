@@ -2,7 +2,7 @@
 {% load static %}
 {% load search_extras %}
 
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <script>
 function replaceSingleQuotes(p1) {
       var s1 = p1.replace(/\'/g, '"')
@@ -103,6 +103,35 @@ function exportCSVFile(specHeaders, items, fileTitle) {
 <script>
 
 /* NEED A BETTER SOLUTION FOR EXPORTING!!!  */
+  var clinFormatted = [{% for result in search.search_results %}
+      {
+        patient_barcode: '{{ result.content.clin.patient_barcode }}',
+        dem_deceased: '{{result.content.clin.dem_deceased}}',
+        dem_race: '{{result.content.clin.dem_race}}',
+        dem_ethnicity: '{{result.content.clin.dem_ethnicity}}',
+        tissue_prim1_histology: '{{result.content.clin.tissue_prim1_histology}}',
+        dem_brca: '{{result.content.clin.dem_brca}}',
+        prim_stage_dx: '{{result.content.clin.prim_stage_dx}}',
+        ypt: '{{result.content.clin.ypt}}',
+        ypn: '{{result.content.clin.ypn}}',
+        ypm: '{{result.content.clin.ypm}}',
+        prim_er: '{{result.content.clin.prim_er}}',
+        prim_pr: '{{result.content.clin.prim_pr}}',
+        prim_her2_interpretation: '{{result.content.clin.prim_her2_interpretation}}',
+        na_txt: '{{result.content.clin.na_txt}}',
+        na_chemo_type: '{{result.content.clin.na_chemo_type}}',
+        surgpath: '{{result.content.clin.surgpath}}',
+        m1_chemotx: '{{result.content.clin.m1_chemotx}}',
+        m1_chemo1_cycles: '{{result.content.clin.m1_chemo1_cycles}}',
+        rads_metastatic_yn: '{{result.content.clin.rads_metastatic_yn}}'
+      },
+        {% if forloop.last %}
+            ];
+        {% endif %}
+      {% endfor %}
+
+  
+
   var specFormatted = [{% for result in search.search_results %}
           {% for sample in result.content.samples %}
            {
@@ -143,6 +172,27 @@ function exportCSVFile(specHeaders, items, fileTitle) {
           {% endif %}
           {% endfor %}
 
+  var clinHeaders = {
+        patient_barcode: "Patient Barcode",
+        dem_deceased: "Deceased",
+        dem_race: "Race",
+        dem_ethnicity: "Ethnicity",
+        tissue_prim1_histology: "Histology",
+        dem_brca: "BRCA Mutation",
+        prim_stage_dx: "Stage",
+        ypt: "Path T",
+        ypn: "Path N",
+        ypm: "Path M",
+        prim_er: "ER",
+        prim_pr: "PR",
+        prim_her2_interpretation: "HER2 Intepretation",
+        na_txt: "Neoadjuvant Treatment",
+        na_chemo_type: "Neoadjuvant Regimen",
+        surgpath: "Tumor Final Resection",
+        m1_chemotx: "Chemotherapy",
+        m1_chemo1_cycles: "# of Cycles",
+        rads_metastatic_yn: "Radiation"
+      };
 
   var specHeaders = {
         patient_barcode: "Patient Barcode",
@@ -166,13 +216,14 @@ function exportCSVFile(specHeaders, items, fileTitle) {
 
 </script>
 {% endif %}
-<div>
-<span class="sample-labels">{{search.result_total|intcomma}} cases&nbsp;&nbsp;</span>
+<span class="sample-labels">{{search.result_total.value|intcomma}} cases found</span>
 <div class="float-right">
-<button id="download" type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(specHeaders, specFormatted, 'aurora_samples')"><i class="fas fa-download"></i>&nbsp;&nbsp;Biospecimen</button>&nbsp;&nbsp;<button id="download" type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(analyteHeaders, analyteFormatted, 'aurora_analyte')"><i class="fas fa-download"></i>&nbsp;&nbsp;Analytes</button>
+<button type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(clinHeaders, clinFormatted, 'aurora_clinical')"><i class="fas fa-download"></i>&nbsp;&nbsp;Clinical</button>&nbsp;&nbsp;
+<button type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(specHeaders, specFormatted, 'aurora_samples')"><i class="fas fa-download"></i>&nbsp;&nbsp;Biospecimen</button>&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(analyteHeaders, analyteFormatted, 'aurora_analyte')"><i class="fas fa-download"></i>&nbsp;&nbsp;Analytes</button>
 </div>
 <hr>
-<div class="resultscroll">
+<hr>
+<div class="resultscrollarea">
 {% for result in search.search_results %}
 <!-- <div> -->
     <div class="card-header" id="{{result.content.clin.patient_barcode}}_h">
@@ -379,7 +430,3 @@ function exportCSVFile(specHeaders, items, fileTitle) {
 <!--</div>    -->
 {% endfor %}
 </div>
-{% if search.result_total > 20 %}
-<div>
-{% endif %}
-

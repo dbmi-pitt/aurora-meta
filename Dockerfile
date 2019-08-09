@@ -56,6 +56,10 @@ COPY . /home/docker/code/
 # be installed in the code/app/ directory
 #RUN django-admin.py startproject website /home/docker/code/app/
 
+# collect all the static media
+#RUN python /home/docker/code/app/manage.py collectstatic --noinput
+
+
 #EXPOSE 8005
 EXPOSE 4435
 

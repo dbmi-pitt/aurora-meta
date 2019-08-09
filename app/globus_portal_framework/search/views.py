@@ -247,28 +247,28 @@ def cohort_request(request):
     return render(request, 'cohort-request.html')    
 
 # facet-search, allow user to select multiple values
-def advanced_filters(request):
-    context = {}
-    query = request.GET.get('q') or request.session.get('query') or \
-        settings.DEFAULT_QUERY
-    if query:
-        if query == "*":
-            query = ""
+# def advanced_filters(request):
+#     context = {}
+#     query = request.GET.get('q') or request.session.get('query') or \
+#         settings.DEFAULT_QUERY
+#     if query:
+#         if query == "*":
+#             query = ""
 
-        filters = {k.replace('filter.', ''): request.GET.getlist(k)
-                   for k in request.GET.keys() if k.startswith('filter.')}
-        #context['search'] = post_search(settings.SEARCH_INDEX, query, filters,
-        #                                request.user,
-        #                                request.GET.get('page', 1))
-        request.session['search'] = {
-            'full_query': request.get_full_path(),
-            'query': query,
-            'filters': filters}
-        #    'aggregate': aggregate(context['search']['facets'])
-        #}
-    print("advanced_filters......" + str(query))
+#         filters = {k.replace('filter.', ''): request.GET.getlist(k)
+#                    for k in request.GET.keys() if k.startswith('filter.')}
+#         #context['search'] = post_search(settings.SEARCH_INDEX, query, filters,
+#         #                                request.user,
+#         #                                request.GET.get('page', 1))
+#         request.session['search'] = {
+#             'full_query': request.get_full_path(),
+#             'query': query,
+#             'filters': filters}
+#         #    'aggregate': aggregate(context['search']['facets'])
+#         #}
+#     print("advanced_filters......" + str(query))
         
-    return HttpResponse(request, status=204)  # just return the updated requests
+#     return HttpResponse(request, status=204)  # just return the updated requests
 
 #def submit_advanced(request):
 #     return HttpResponse(request, status=204) 
@@ -277,7 +277,11 @@ def submit_advanced(request):
     context = {}
     #filters = request.GET.get('filters') or request.session.get('filters') 
     #print(request)
-    filters = request.session['search']['filters']
+    filters = request.GET.get('filters') or request.session.get('filters') 
+    filters = {k.replace('filter.', ''): request.GET.getlist(k)
+                for k in request.GET.keys() if k.startswith('filter.')}
+
+    #filters = request.session['search']['filters']
     query = request.session['search']['query']
     full_query = request.get_full_path()
     print("submit_advanced...")

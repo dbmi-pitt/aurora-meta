@@ -1,6 +1,7 @@
 from os.path import join, dirname
 
 from django.conf import settings
+from globus_portal_framework.settings import DEBUG
 
 FORCE_SCRIPT_NAME = '/ddp'
 
@@ -31,5 +32,8 @@ SEARCH_MAX_PAGES = getattr(settings, 'SEARCH_MAX_PAGES', 30)
 # if there is a lot of search data in the index, as searches will take a while
 DEFAULT_QUERY = getattr(settings, 'DEFAULT_QUERY', '')
 
-LOGIN_URL = 'login'
 
+if DEBUG == False:
+	LOGIN_URL = 'ddp/login'
+else:
+	LOGIN_URL = 'login'
