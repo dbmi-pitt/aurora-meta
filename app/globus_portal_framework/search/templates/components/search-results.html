@@ -2,7 +2,10 @@
 {% load static %}
 {% load search_extras %}
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/new-age.min.css' %}" />
 <script>
 function replaceSingleQuotes(p1) {
       var s1 = p1.replace(/\'/g, '"')
@@ -99,6 +102,7 @@ function exportCSVFile(specHeaders, items, fileTitle) {
     }
 }
 </script>
+<span class="clinical-labels">{{search.result_total|intcomma}} cases found</span>
 {% if search.search_results  %}
 <script>
 
@@ -215,17 +219,15 @@ function exportCSVFile(specHeaders, items, fileTitle) {
 
 
 </script>
-{% endif %}
-<span class="sample-labels">{{search.result_total.value|intcomma}} cases found</span>
+
 <div class="float-right">
 <button type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(clinHeaders, clinFormatted, 'aurora_clinical')"><i class="fas fa-download"></i>&nbsp;&nbsp;Clinical</button>&nbsp;&nbsp;
 <button type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(specHeaders, specFormatted, 'aurora_samples')"><i class="fas fa-download"></i>&nbsp;&nbsp;Biospecimen</button>&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(analyteHeaders, analyteFormatted, 'aurora_analyte')"><i class="fas fa-download"></i>&nbsp;&nbsp;Analytes</button>
 </div>
 <hr>
-<hr>
+{% endif %}
 <div class="resultscrollarea">
-{% for result in search.search_results %}
-<!-- <div> -->
+  {% for result in search.search_results %}
     <div class="card-header" id="{{result.content.clin.patient_barcode}}_h">
 
         <button class="btn btn-link" data-toggle="collapse" data-target="#{{result.content.clin.patient_barcode}}" aria-expanded="true" aria-controls="{{result.content.clin.patient_barcode}}">
@@ -235,7 +237,7 @@ function exportCSVFile(specHeaders, items, fileTitle) {
     </div>
      <div id="{{result.content.clin.patient_barcode}}" class="collapse" aria-labelledby="{{result.content.clin.patient_barcode}}_h" data-parent="#bioaccordion">
       <div class="card-body">
-      <span class="sample-labels">Clinical</span>
+      <span class="navbar navbar-light" style="background-color: #D8D8D8; font-weight: bold;">Clinical Information</span>
       <table id="repdata">
         <tbody>
           <tr>
@@ -276,9 +278,8 @@ function exportCSVFile(specHeaders, items, fileTitle) {
 
         </tbody>
       </table>      
-      <hr>
-      <span class="sample-labels">Samples</span>
-      <table class="minimalistBlack">
+      <span class="navbar navbar-light" style="background-color: #D8D8D8; font-weight: bold;">Samples</span>
+      <table class="greyGridTable">
          <thead>
             <tr>
               <th style="width: 20px;"></th>
@@ -301,132 +302,69 @@ function exportCSVFile(specHeaders, items, fileTitle) {
             <td><span>{{sample.sample_info.tissue_type}}</span></td>
             <td><span>{{sample.sample_info.composition}}</span></td>            
             <td><span>{{sample.sample_info.preservation_method}}</span></td>
-            <td>{{sample.portion|length}}&nbsp;&nbsp;<button id="btn_{{sample.identifiers.bcr_sample_barcode}}" title="click to toggle portions panel"><i class="fas fa-list"></i>Show/Hide</button></td>
-            </tr>   
+            <td><button class="btn btn-secondary btn-sm" id="btn_{{sample.identifiers.bcr_sample_barcode}}" data-toggle="button" title="click to toggle portions panel" aria-pressed="false" autocomplete="off">({{sample.portion|length}})&nbsp;<i class="fas fa-list"></i></button></td>
+          </tr>   
             <script>
                   $( "#btn_{{sample.identifiers.bcr_sample_barcode}}" ).click(function() {
                     console.log("toggling portion panel")
                     $( "#portions_{{sample.identifiers.bcr_sample_barcode}}" ).toggle("slow");
                   });
             </script>
-          <td colspan="8" style="padding: 0px;">           
+          <td colspan="8" style="padding: 0px;">
            <div id="portions_{{sample.identifiers.bcr_sample_barcode}}" style="display: none;"> <!--style="display: none;"-->
+              <div>
+              {% for po in sample.portion %}
+                <span class="navbar navbar-dark" style="background-color: #A4A4A4; color: #FFFFFF; font-weight: bold;">{{po.identifiers.bcr_portion_barcode}} | #{{forloop.counter}}</span>
 
-            <table>
-                    <tbody>
-                         <thead>
-                          <tr bgcolor="#437FC9">
-                          <th></th>
-                          <th>Portion Barcode</th>
-                          <th>Analytes</th>
-                        </tr>
-                      </thead>
-                      {% for po in sample.portion %}
-                      <tr>
-                        <td class="counterlabel">{{forloop.counter}}</td>
-                        <td>{{po.identifiers.bcr_portion_barcode}}</td>
-                        <td>
-                          <table>
-                          <tbody>
-                            <thead>
-                            <tr bgcolor="#85acdb">
-                                <th>Analyte Barcode</th>
-                                <th>Analyte Type</th>
-                                <th>Aliquots</th>
-                            </tr>
-                            </thead>
-                            {% for al in po.analyte %}
-                            <tr>
-                                <!--<td>{{forloop.counter}}</td>-->
-                                <td>{{al.identifiers.bcr_analyte_barcode}}</td>
-                                <td>{{al.identifiers.analyte_type}}</td>
-                                <td>
-                                  <table>
-                                 <tbody>
-                                  <thead>
-                                    <tr bgcolor="#a7bad1">
-                                      <th>Aliquot Barcode</th>
-                                      <th>Analysis Type</th>
-                                      <th>Sequence Type</th>
-                                      <th>Files</th>
-                                    </tr>
-                                  </thead>                       
-                                  {% for aq in al.aliquot %}
-                                    {% if aq.seq_info.WES %}   <!-- check for a WES -->
-                                      <tr>
-                                        <td>{{aq.identifiers.bcr_aliquot_barcode}}</td>                                      
-                                          <td>{{aq.seq_info.WES.analysis_type}}</td>
-                                          <td>{{aq.seq_info.WES.seq_type}}</td>
-                                          <td>
+                      {% for al in po.analyte %}
+                      &nbsp;&nbsp;&nbsp;&nbsp;<span class="sample-labels">Analyte Barcode:</span> {{al.identifiers.bcr_analyte_barcode}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Analyte Type:</span> {{al.identifiers.analyte_type}}<br>
+                            {% for aq in al.aliquot %}
+                                  {% if aq.seq_info.WES %}   <!-- check for a WES -->
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sample-labels">Aliquot Barcode:</span>{{aq.identifiers.bcr_aliquot_barcode}} &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Analysis Type:</span>{{aq.seq_info.WES.analysis_type}} &nbsp;|&nbsp;<span class="sample-labels">Seq Type:</span> {{aq.seq_info.WES.seq_type}}
+                                      <ul>                                    
                                           {% if aq.seq_info.WES.files|length > 0 %}
-                                          <ul>
                                             {% for f in aq.seq_info.WES.files %}
-                                              <li><b>{{f.level}}</b>&nbsp;|&nbsp;<b>{{f.file_type}}</b>&nbsp;|&nbsp;{{f.file_names}}</li>
+                                              <li><b>{{f.level}}</b>&nbsp;&nbsp;|&nbsp;&nbsp;<b>{{f.file_type}}</b>&nbsp;&nbsp;|&nbsp;&nbsp;{{f.file_names}}</li>
                                             {% endfor %}
-                                          </ul>
-                                          {% else %}
-                                            <span>None</span>
+                                             {% else %}
+                                              <li>No Associated Files</li>
                                           {% endif %}
-                                          </td>
-                                      </tr>
+                                      </ul>
                                     {% endif %}
                                     {% if aq.seq_info.WGS %}   <!-- check for a WSG -->
-                                      <tr>
-                                        <td>{{aq.identifiers.bcr_aliquot_barcode}}</td>                                      
-                                          <td>{{aq.seq_info.WGS.analysis_type}}</td>
-                                          <td>{{aq.seq_info.WGS.seq_type}}</td>
-                                          <td>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sample-labels">Aliquot Barcode:</span>{{aq.identifiers.bcr_aliquot_barcode}} &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Analysis Type:</span>{{aq.seq_info.WGS.analysis_type}} &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Seq Type:</span>{{aq.seq_info.WGS.seq_type}}
+                                        <ul>
                                           {% if aq.seq_info.WGS.files|length > 0 %}
-                                          <ul>
                                             {% for f in aq.seq_info.WGS.files %}
-                                              <li><b>{{f.level}}</b>&nbsp;|&nbsp;<b>{{f.file_type}}</b>&nbsp;|&nbsp;{{f.file_names}}</li>
+                                              <li><b>{{f.level}}</b>&nbsp;&nbsp;|&nbsp;&nbsp;<b>{{f.file_type}}</b>&nbsp;&nbsp;|&nbsp;&nbsp;{{f.file_names}}</li>
                                             {% endfor %}
-                                          </ul>
-                                          {% else %}
-                                            <span>None</span>
+                                            {% else %}
+                                              <li>No Associated Files</li>
                                           {% endif %}
-                                          </td>
-                                      </tr>
+                                        </ul>
                                     {% endif %}
                                     {% if aq.seq_info.WES == None and aq.seq_info.WGS == None %}
-                                    <tr>
-                                      <td>{{aq.identifiers.bcr_aliquot_barcode}}</td>
-                                      <td>{{aq.seq_info.analysis_type}}</td>
-                                      <td>{{aq.seq_info.seq_type}}</td>
-                                      <td>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sample-labels">Aliquot Barcode:</span>{{aq.identifiers.bcr_aliquot_barcode}} &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Analysis Type:</span>{{aq.seq_info.analysis_type}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Seq Type:</span>{{aq.seq_info.seq_type}}
+                                      <ul>
                                         {% if aq.seq_info.files|length > 0 %}
-                                          <ul>
                                             {% for f in aq.seq_info.files %}
-                                              <li><b>{{f.level}}</b>&nbsp;|&nbsp;<b>{{f.file_type}}</b>&nbsp;|&nbsp;{{f.file_names}}</li>
-                                            {% endfor %}
-                                          </ul>
-                                        {% else %}
-                                          <span>None</span>
+                                              <li><b>{{f.level}}</b>&nbsp;&nbsp;|&nbsp;&nbsp;<b>{{f.file_type}}</b>&nbsp;&nbsp;|&nbsp;&nbsp;{{f.file_names}}</li>
+                                            {% endfor %}   
+                                          {% else %}
+                                              <li>No Associated Files</li>                                       
                                         {% endif %}
-                                      </td>
-                                    </tr>
+                                      </ul>
                                     {% endif %}
-                                  {% endfor %}
-                                </tbody>
-                                </table>
-                              </td>
-                            </tr>
+                                {% endfor %}
                             {% endfor %}
-                          </tbody>
-                        </table>
-                        </td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-              </table>  
-           </div>
-          </td>
-
-          {% endfor %}          
+                    {% endfor %}
+                  </div>
+                </div>
+              </td>
+          {% endfor %}  
         </tbody>
       </table>
-    </div>
-    </div>
-<!--</div>    -->
+  </div> 
+</div>
 {% endfor %}
 </div>

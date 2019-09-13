@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+<link rel="stylesheet" type="text/css" href="{% static 'css/new-age.min.css' %}" />
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="{% static 'js/cr3-charts.js' %}"></script>
 
@@ -118,8 +118,8 @@ $(document).ready(function() {
                                                     effect: "explode",
                                                     duration: 1000
                                         },
-                                                width:800,
-                                                height:900,
+                                                width:600,
+                                                height:600,
                                                 position: { my: "center", at: "center", of: window }
                                     });
                                     $("#documentation").on("click", function() {
@@ -129,24 +129,28 @@ $(document).ready(function() {
               </script>
 
        <form id="search-form" class="my-4" name="search_form" action="{% url 'search' %}">
-        <input type="text" id="search-input" autocomplete="off"
+        <div class="input-group mb-3">
+        <input type="text" class="form-control" onclick="this.select()"
            data-provide="typeahead" name="q" title="Search for text or IDs (e.g., AUR_01_01_06)"
-           value="{{request.session.search.query}}" placeholder="Search for text or IDs (e.g., AUR_01_01_06)">           
-        <button id="search-btn" type="submit" class="btn btn-default">
-          <i class="fas fa-search"></i>
-        </button><br>        
+           value="{{request.session.search.query}}" placeholder="Search for text or IDs (e.g., AUR_01_01_06)">  
+           <div class="input-group-append">         
+              <button type="submit" class="btn btn-outline-secondary">
+                <i class="fas fa-search"></i>
+              </button><br>        
+          </div>
+        </div>
       </form>
 </div>
 {% if search.facets %}
 <div class="sidebar">     
       <span class="sample-labels">Additional Filters</span>
        <form id="facet-form-apply"> 
-        <b>To narrow your search, make your selection(s) below and press:</b>
-            <button id="search-btn" type="submit" class="btn btn-default" formaction="{% url 'submit_advanced' %}">
+        Expand the categories below to select other filters. After making your selection(s) below and press:<br>
+            <button id="search-btn" type="submit" class="btn btn-secondary" formaction="{% url 'submit_advanced' %}">
               <i class="fas fa-filter"></i>
               Apply
             </button>
-            <button id="search-btn" type="submit" class="btn btn-default" formaction="{% url 'search' %}">
+            <button id="search-btn" type="submit" class="btn btn-secondary" formaction="{% url 'search' %}">
               Clear
             </button>
              {% include "components/search-facets-accord.html" %}
@@ -154,7 +158,9 @@ $(document).ready(function() {
       <!--<hr class="d-sm-none">-->
 </div>   <!--search area-->
 {% endif %}
+
 <div class="chartbar">  
+{% if search.search_results  %}
   <table>
     <tr>
       <td><div id="samples-chart" style="width: 380px; height: 200px;"></div></td>
@@ -162,15 +168,14 @@ $(document).ready(function() {
       <td><div id="site_chart" style="width: 200px; height: 200px;"></div></td>      
     </tr>
   </table>
+{% endif %}
 </div>  
-<hr>
+
 <div class="resultarea">  
   {% if request.session.search.show_results == "True" %}
     {% include "components/search-results.html" %}    
   {% endif %}
 </div>
-
-
 
 <!--
 <div class="jumbotron text-center" style="margin-bottom:0">
@@ -179,5 +184,6 @@ $(document).ready(function() {
 -->
 </div>
 {% endblock %}
+
 
 

@@ -16,9 +16,9 @@ h4, h5, a {
     font-weight: 300;
 }
 
+/*
 hr.style1 {
-    /* margin-top: 1rem; */
-    /* margin-bottom: 1rem; */
+   position: left;
     border: 0;
     border-top: 1px solid #bfc0c1;
 	clear:both;
@@ -34,6 +34,7 @@ hr.style18:before {
   border-width: 0 0 1px 0; 
   border-radius: 20px; 
 }
+*/
 
 div.info {
   font-family: "Gotham SSm A", "Gotham SSm B";  
@@ -502,7 +503,8 @@ div.jumbotron p i{
 }
 */
 p.docfont {
-  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  font-size: 14px;
 }
 
 /*
@@ -561,7 +563,8 @@ div.facet-card {
 .accordian .panel-heading:after{
   font-family: "FontAwesome";
   content: "\f068";
-  float: right;
+  float: right;  
+  padding-top: 10px;
 }
 
 .accordian .panel-heading .collapsed:after {
@@ -672,10 +675,6 @@ h2.headers{font-size:1.5em;
 	color:#000099;
 }
 
-hr {
-	padding:0px 0px;
-	color:black;
-}
 
 .repnote{
 	padding:10px 10px 10px 40px;
@@ -742,14 +741,24 @@ hr {
    font-weight:bold;
 }	
 
+
+.section-title {
+  font-weight:bold;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  font-size:1.3em;  
+  text-decoration: underline;  
+}
+
 .clinical-labels {
   font-weight:bold;
-  font-size:1em;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  font-size:1.1em;
 }
 
 .sample-labels {
   font-weight:bold;
-  font-size:1.5em;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;  
+  font-size:1.1em;
 }
 
 .portion-labels {
@@ -911,56 +920,49 @@ table#repdata{
 	width:100%;
 	height:65%;
 	padding:2px;
-	color:#666;
+	
 }
 table#repdata td {
     min-width: 250px;
 	padding:2px;
 }
 
-/*
-table.minimalistBlack {
-  border: 1px solid #000000;
+.fontsize-xxs {
+    font-family: Montserrat,sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: normal;
+    line-height: 18px;
+    margin: 0 0 4px;
+}
+table.greyGridTable {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  border: 2px solid #FFFFFF;
   width: 100%;
   text-align: left;
   border-collapse: collapse;
-  table-layout: fixed;
 }
-table.minimalistBlack td, table.minimalistBlack th {
-  border: 1px solid #000000;
-  padding: 5px 4px;
+table.greyGridTable td, table.greyGridTable th {
+  border: 1px solid #FFFFFF;
 }
-*/
-table.minimalistBlack {
-  font-family: Verdana, Geneva, sans-serif;
-  border: 1px solid #000000;
-  width: 100%;
-  text-align: left;
-  border-collapse: collapse;
-  padding: 0px;
+table.greyGridTable tbody td {
+  font-size: 12px;
 }
-table.minimalistBlack td, table.minimalistBlack th {
-  border: 1px solid #000000;
-  padding: 5px 4px;  
+table.greyGridTable thead {
+  background: #FFFFFF;
+  border-bottom: 2px solid #333333;
 }
-table.minimalistBlack tbody td {
-  font-size: 10px;
-}
-table.minimalistBlack thead {
-  background: #273e8e;
-  border-bottom: 1px solid #000000;
-}
-table.minimalistBlack thead th {
+table.greyGridTable thead th {
   font-size: 12px;
   font-weight: bold;
-  color: #FFFFFF;
+  color: #333333;
   text-align: center;
-  border-left: 1px solid #D0E4F5;
+  border-left: 2px solid #333333;
 }
-table.minimalistBlack thead th:first-child {
+table.greyGridTable thead th:first-child {
   border-left: none;
 }
 
-table.minimalistBlack tfoot td {
+table.greyGridTable tfoot td {
   font-size: 14px;
 }
