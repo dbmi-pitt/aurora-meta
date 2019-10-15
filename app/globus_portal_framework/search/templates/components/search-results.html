@@ -6,7 +6,61 @@
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/new-age.min.css' %}" />
+<!-- Include jQuery Popup Overlay -->
+<script src="https://cdn.jsdelivr.net/gh/vast-engineering/jquery-popup-overlay@2/jquery.popupoverlay.min.js"></script>
+<style type="text/css">
+.mscope:link, a:visited {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+.mscope:visited {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+.popup_content {
+  margin: 10px;
+  padding: 0 10px;
+  max-width: 90%;
+  border: 1px solid #444;
+  background: white;
+}
+
+.htable {
+  display: table;
+  margin: 0 auto;
+  text-align: center;
+}
+
+ul#horizontal-list {
+  min-width: 696px;
+  list-style: none;
+  padding-top: 20px;
+}
+
+ul#horizontal-list li {
+  display: inline;
+  text-align: center;
+}
+
+figure.item {
+  vertical-align: top;
+  display: inline-block;
+  text-align: center;
+  width: 220px;
+}
+
+img {
+  width: 200px;
+  height: 200px;
+  background-color: grey;
+  border: 1px solid #444;
+}
+
+</style>
 <script>
+
 function replaceSingleQuotes(p1) {
       var s1 = p1.replace(/\'/g, '"')
     return s1
@@ -27,8 +81,9 @@ function replaceEndStuff(p1) {
     return s1
 }
 
-  var jsonstr = replaceSingleQuotes("{{search.search_results|safe}}")
-  console.log (typeof jsonstr)
+var jsonstr = replaceSingleQuotes("{{search.search_results|safe}}")
+var image_map = replaceSingleQuotes("{{search.images|safe}}")
+//console.log (typeof jsonstr)
 
 /*  
   var json = JSON.parse(jsonstr);
@@ -101,6 +156,67 @@ function exportCSVFile(specHeaders, items, fileTitle) {
       }
     }
 }
+
+function getImageCount(sample_id) {
+  var jobj = JSON.parse(image_map);
+  var cnt = jobj[sample_id];
+  if (cnt === undefined)
+    cnt = 0;
+  return cnt;
+}
+
+
+
+/* Get the slides names from the OpenSlide server and open an image gallery*/
+function getSlides(sample_id) {
+  var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://localhost:5000/get_sample_images/" + sample_id,
+    "method": "GET",
+    "dataType": 'json',
+    "headers": {
+      "cache-control": "no-cache",
+      "postman-token": "f09e9396-bcd3-42dc-c28c-11ecd4aa1690"
+    }
+  }
+
+  $.ajax(settings).done(function (response) {
+    var element = document.getElementById("image_list");    
+    var images = response;
+    var html = ""
+
+    if (images.images.length > 0) {
+      for (i=0; i < images.images.length; i++) {
+        href = "http://localhost:5000/" + images.images[i]
+        toks = images.images[i].split(".")
+        
+        html += "<figure class=\"item\">"
+        html += "<a href=\"" + href + "\" target=\"_blank\"><img src=\"/static/img/cell2.jpg\" width=\"50\" height=\"50\" align=\"center\"></a>";
+        html +=  "<figcaption class=\"caption\">" + toks[0] + "</figcaption>"
+        html += "</figure>"
+      }
+      //html = "<ul id=\"horizontal-list\">" + html + "</ul>" ;
+    } else {
+      html = "No Slides are available for " + sample_id;
+    }
+    element.innerHTML = html;
+    $('#imagegallery').popup();  
+
+  });
+}
+
+$(document).ready(function() {
+  // Initialize the popup plugin
+  $('#imagegallery').popup({
+  opacity: 0.3,
+  transition: 'all 0.3s'
+});
+  // Set default `pagecontainer` for all popups (optional, but recommended for screen readers and iOS*)
+  $.fn.popup.defaults.pagecontainer = '#page'
+});
+
+
 </script>
 <span class="clinical-labels">{{search.result_total|intcomma}} cases found</span>
 {% if search.search_results  %}
@@ -220,6 +336,18 @@ function exportCSVFile(specHeaders, items, fileTitle) {
 
 </script>
 
+<!-- Add a button to open the popup (optional) 
+ <div id="page">
+    <header></header>
+    <main>
+
+      <button class="imagegallery_open">Open popup</button>
+    </main>
+    <footer></footer>
+  </div>
+-->
+
+
 <div class="float-right">
 <button type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(clinHeaders, clinFormatted, 'aurora_clinical')"><i class="fas fa-download"></i>&nbsp;&nbsp;Clinical</button>&nbsp;&nbsp;
 <button type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(specHeaders, specFormatted, 'aurora_samples')"><i class="fas fa-download"></i>&nbsp;&nbsp;Biospecimen</button>&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(analyteHeaders, analyteFormatted, 'aurora_analyte')"><i class="fas fa-download"></i>&nbsp;&nbsp;Analytes</button>
@@ -290,6 +418,7 @@ function exportCSVFile(specHeaders, items, fileTitle) {
               <th>Composition</th>
               <th>Preservation Method</th>
               <th># of Portions</th>
+              <th>Slides</th>
             </tr>
           </thead>
         <tbody>
@@ -303,10 +432,14 @@ function exportCSVFile(specHeaders, items, fileTitle) {
             <td><span>{{sample.sample_info.composition}}</span></td>            
             <td><span>{{sample.sample_info.preservation_method}}</span></td>
             <td><button class="btn btn-secondary btn-sm" id="btn_{{sample.identifiers.bcr_sample_barcode}}" data-toggle="button" title="click to toggle portions panel" aria-pressed="false" autocomplete="off">({{sample.portion|length}})&nbsp;<i class="fas fa-list"></i></button></td>
+
+            <td><input class="imagegallery_open btn btn-secondary btn-sm" id="btnimages_{{sample.identifiers.bcr_sample_barcode}}" type="button" onclick="getSlides('{{sample.identifiers.bcr_sample_barcode}}')" value="">&nbsp;<i class="fas fa-microscope"></i></input></td>          
           </tr>   
             <script>
+                var elem = document.getElementById("btnimages_{{sample.identifiers.bcr_sample_barcode}}")
+                var imgcnt = getImageCount('{{sample.identifiers.bcr_sample_barcode}}')
+                elem.value = "(" + imgcnt.toString() + ")"
                   $( "#btn_{{sample.identifiers.bcr_sample_barcode}}" ).click(function() {
-                    console.log("toggling portion panel")
                     $( "#portions_{{sample.identifiers.bcr_sample_barcode}}" ).toggle("slow");
                   });
             </script>
@@ -367,4 +500,20 @@ function exportCSVFile(specHeaders, items, fileTitle) {
   </div> 
 </div>
 {% endfor %}
+<div id="imagegallery">
+  <div style="text-align:center">
+    <h4>Whole Slide Images</h4>
+  </div>
+   <div id="image_list">
+    </div>
+<!--
+  <div class="htable">
+    <div id="image_list">
+    </div>
+  </div>
+-->
+    <!-- Add content to the popup -->
+    <!-- Add a button to close the popup (optional)     -->
+    <button class="imagegallery_close btn btn-dark btn-sm">Close</button>
+  </div>
 </div>

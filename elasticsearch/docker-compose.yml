@@ -1,23 +1,30 @@
-version: '2.2'
+version: '3.7'
+
 services:
   es01:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.1
-    container_name: es01
+    image: elasticsearch:${ELASTIC_VERSION}
+    container_name: elasticsearch 
     environment:
+      - cluster.name=esddp
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    restart: on-failure
     volumes:
-      - esdata01:/usr/share/elasticsearch/data
+      - esdata1:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
     networks:
       - data-portal_default
-    restart: always
-networks:
-   data-portal_default:
-      external: true
 volumes:
-   esdata01:
-      driver: local
+  esdata1:
+    driver: local
+
+networks:
+  data-portal_default:
+         external: true
 

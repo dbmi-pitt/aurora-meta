@@ -7,6 +7,7 @@ import logging
 from importlib import import_module
 from urllib.parse import quote_plus, unquote
 import globus_sdk
+import http.client
 
 from globus_portal_framework import settings as g_settings
 from globus_portal_framework.search import settings
@@ -106,6 +107,9 @@ def search_es(querystr):
         gfilters = {}
         results = process_search_data(res['hits']['hits'])
         facets = get_facets(res['aggregations'], SEARCH_SCHEMA, gfilters)
+
+        # TEMP SOLUTION!!!!
+        images = get_imagemap()
         #print(results)
         # TEST FOR REPORT SEARCH
 #        reports = search_es_reports(querystr)
@@ -119,6 +123,7 @@ def search_es(querystr):
             'result_total': res['hits']['total'], 
             'facets':facets,
             'query':querystr,
+            'images':images
 #            'report_results': reports['report_results'],
  #           'report_total': reports['report_total']
             }
@@ -293,8 +298,9 @@ def process_search_data(results):
             #'content': entry['_source']['content']
             'content': entry['_source'],   #['content']
             'doc_score': entry['_score']
+            #'images' : get_images(entry['_id'])
         })
-    #print('RESULTS RETURNED: ' + str(len(structured_results)))
+    #print(structured_results)
     return structured_results
 
 def process_search_data_reports(results):
@@ -477,3 +483,51 @@ def general_mapper(entry, schema):
 
 def service_var_mapper(entry, schema):
     pass
+
+def get_images(patient_id):
+
+    conn = http.client.HTTPConnection("localhost:5000")
+
+    headers = {
+        'cache-control': "no-cache",
+        'postman-token': "3fecc1a7-fd6f-fea8-70ff-a0b493406d03"
+        }
+
+    req_url = "/get_patient_images/" + patient_id
+
+    conn.request("GET", req_url, headers=headers)
+
+    res = conn.getresponse()
+    data = res.read()
+
+    js = data.decode("utf-8")
+    jsres = json.loads(js)
+    print('*******************************************************')
+    print(jsres['images'])
+    #print(type(jsres))
+    print('*******************************************************')
+    return jsres['images']
+    #return data.decode("utf-8")
+
+def get_imagemap():
+    conn = http.client.HTTPConnection("localhost:5000")
+
+    headers = {
+        'cache-control': "no-cache",
+        'postman-token': "3fecc1a7-fd6f-fea8-70ff-a0b493406d03"
+        }
+
+    req_url = "/image_count_map"
+
+    conn.request("GET", req_url, headers=headers)
+
+    res = conn.getresponse()
+    data = res.read()
+
+    js = data.decode("utf-8")
+    jsres = json.loads(js)
+    print('*******************************************************')
+    print(jsres)
+    #print(type(jsres))
+    print('*******************************************************')
+    return jsres
