@@ -62,7 +62,7 @@ def search_es(querystr):
         if querystr.find("-") > -1:
             querystr = '\"' + str(querystr) + '\"'
 
-    print(querystr)
+    #print(querystr)
 
     # form basic query body
     body = { "from": 0, "size": 1000,
@@ -184,7 +184,7 @@ def reformat_filters(filters):
             multi_val = ""            
             for v in values:
                 multi_val += '"' + str(v) + '" OR '
-            print(multi_val)
+            #print(multi_val)
             query_list.append(str(k) + ":(" + str(multi_val[0:-4]) + ")")
 
         else:
@@ -502,10 +502,10 @@ def get_images(patient_id):
 
     js = data.decode("utf-8")
     jsres = json.loads(js)
-    print('*******************************************************')
-    print(jsres['images'])
+#    print('*******************************************************')
+#    print(jsres['images'])
     #print(type(jsres))
-    print('*******************************************************')
+#    print('*******************************************************')
     return jsres['images']
     #return data.decode("utf-8")
 
@@ -526,8 +526,26 @@ def get_imagemap():
 
     js = data.decode("utf-8")
     jsres = json.loads(js)
-    print('*******************************************************')
-    print(jsres)
+    #print('*******************************************************')
+    #print(jsres)
     #print(type(jsres))
-    print('*******************************************************')
+    #print('*******************************************************')
     return jsres
+
+# def get_image_thumbnail(image_name):
+
+#     conn = http.client.HTTPConnection("localhost:5000")
+
+#     headers = {
+#         'cache-control': "no-cache",
+#         'postman-token': "3fecc1a7-fd6f-fea8-70ff-a0b493406d03"
+#         }
+
+#     req_url = "/get_image_thumbnail/" + image_name
+
+#     conn.request("GET", req_url, headers=headers)
+
+#     res = conn.getresponse()
+#     data = res.read()
+
+#     return data.decode("utf-8")
