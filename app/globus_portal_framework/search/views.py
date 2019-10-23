@@ -109,7 +109,8 @@ def search(request):
     context = {}
     query = request.GET.get('q') or request.session.get('query') or \
         settings.DEFAULT_QUERY
-    print(query)
+    #print(query)
+    print('openslide url: {}'.format(settings.OPENSLIDE_URL))
     if query:
         filters = {k.replace('filter.', ''): request.GET.getlist(k)
                    for k in request.GET.keys() if k.startswith('filter.')}
@@ -120,6 +121,7 @@ def search(request):
             'full_query': request.get_full_path(),
             'query': query,
             'filters': filters,
+            'openslide': settings.OPENSLIDE_URL,
             'samples_agg': aggregate(context['search']['facets'], 'Sample Types'),
             'samples_pres_agg': aggregate(context['search']['facets'], 'Sample Preservation Method'),
             'samples_site_agg': aggregate(context['search']['facets'], 'Sample Tissue Type'),
@@ -154,6 +156,7 @@ def search(request):
                 'full_query': request.get_full_path(),
                 'query': query,
                 'filters': filters,
+                'openslide': settings.OPENSLIDE_URL,                
                 'samples_agg': aggregate(context['search']['facets'], 'Sample Types'),
                 'samples_pres_agg': aggregate(context['search']['facets'], 'Sample Preservation Method'),
                 'samples_site_agg': aggregate(context['search']['facets'], 'Sample Tissue Type'),                

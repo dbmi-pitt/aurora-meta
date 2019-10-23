@@ -8,6 +8,7 @@ from importlib import import_module
 from urllib.parse import quote_plus, unquote
 import globus_sdk
 import http.client
+import ssl
 
 from globus_portal_framework import settings as g_settings
 from globus_portal_framework.search import settings
@@ -29,7 +30,7 @@ SEARCH_SCHEMA = load_json_file(settings.SEARCH_SCHEMA)
 def post_search(index, query, filters, user=None, page=1, advanced=False):
     print("post search")
     #print(filters)
-    #print(query)
+
     if advanced:
         adv_query = reformat_filters(filters)
         if adv_query and len(adv_query) > 0:
@@ -53,8 +54,14 @@ def search_es(querystr):
         es_url = 'localhost'
     else:
         es_url = settings.ES_URL
+
+    print('ES Host: {}:{}'.format(es_url, settings.ES_PORT))
     
-    es = Elasticsearch([{'host': es_url, 'port': settings.ES_PORT}])
+    try:
+        es = Elasticsearch([{'host': es_url, 'port': settings.ES_PORT}])
+    except Exception as e:
+        print('DARN an error!!')
+        es = Elasticsearch([{'host': 'localhost', 'port': settings.ES_PORT}])
 
     tokens = querystr.split(" ")
 
@@ -109,13 +116,20 @@ def search_es(querystr):
         facets = get_facets(res['aggregations'], SEARCH_SCHEMA, gfilters)
 
         # TEMP SOLUTION!!!!
-        images = get_imagemap()
+        images = ""
+        try:
+            images = get_imagemap()
+        except Exception as e:
+            print("Can't get the image map!!!!")
+        
         #print(results)
         # TEST FOR REPORT SEARCH
 #        reports = search_es_reports(querystr)
         #print(facets)        
 
     except Exception as e:
+        print('Unable to get results from data')
+        print(e)
         raise e
     #for doc in res['hits']['hits']:
     #    print("%s) %s" % (doc['_id'], doc['_source']['content']))
@@ -484,68 +498,65 @@ def general_mapper(entry, schema):
 def service_var_mapper(entry, schema):
     pass
 
-def get_images(patient_id):
+# def get_images(patient_id):
 
-    conn = http.client.HTTPConnection("localhost:5000")
+#     try:
 
-    headers = {
-        'cache-control': "no-cache",
-        'postman-token': "3fecc1a7-fd6f-fea8-70ff-a0b493406d03"
-        }
+#         context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+#         context.verify_mode = ssl.CERT_NONE   # ignore the cert req
 
-    req_url = "/get_patient_images/" + patient_id
+#         conn = http.client.HTTPSConnection("openslide", port=5000, context=context)
 
-    conn.request("GET", req_url, headers=headers)
+#         headers = {
+#             'cache-control': "no-cache",
+#             'postman-token': "3fecc1a7-fd6f-fea8-70ff-a0b493406d03"
+#             }
 
-    res = conn.getresponse()
-    data = res.read()
+#         req_url = "/get_patient_images/" + patient_id
 
-    js = data.decode("utf-8")
-    jsres = json.loads(js)
-#    print('*******************************************************')
-#    print(jsres['images'])
-    #print(type(jsres))
-#    print('*******************************************************')
-    return jsres['images']
-    #return data.decode("utf-8")
+#         conn.request("GET", req_url, headers=headers)
+
+#         res = conn.getresponse()
+#         data = res.read()
+
+#         js = data.decode("utf-8")
+#         jsres = json.loads(js)
+        
+#         return jsres['images']
+
+#     except Exception as e:
+#         print(e)
+#         raise e
 
 def get_imagemap():
-    conn = http.client.HTTPConnection("localhost:5000")
 
-    headers = {
-        'cache-control': "no-cache",
-        'postman-token': "3fecc1a7-fd6f-fea8-70ff-a0b493406d03"
-        }
+    try:
 
-    req_url = "/image_count_map"
+        context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+        context.verify_mode = ssl.CERT_NONE   # ignore the cert req
 
-    conn.request("GET", req_url, headers=headers)
+        conn = http.client.HTTPSConnection("openslide", port=5000, context=context)
 
-    res = conn.getresponse()
-    data = res.read()
+        headers = {
+            'cache-control': "no-cache",
+            'postman-token': "3fecc1a7-fd6f-fea8-70ff-a0b493406d03"
+            }
 
-    js = data.decode("utf-8")
-    jsres = json.loads(js)
-    #print('*******************************************************')
-    #print(jsres)
-    #print(type(jsres))
-    #print('*******************************************************')
-    return jsres
+        req_url = "/image_count_map"
 
-# def get_image_thumbnail(image_name):
+        conn.request("GET", req_url, headers=headers)
 
-#     conn = http.client.HTTPConnection("localhost:5000")
+        res = conn.getresponse()
+        data = res.read()
 
-#     headers = {
-#         'cache-control': "no-cache",
-#         'postman-token': "3fecc1a7-fd6f-fea8-70ff-a0b493406d03"
-#         }
+        js = data.decode("utf-8")
+        jsres = json.loads(js)
+        #print('*******************************************************')
+        #print(jsres)
+        #print(type(jsres))
+        #print('*******************************************************')
+        return jsres
+    except Exception as e:
+        print(e)
+        raise e
 
-#     req_url = "/get_image_thumbnail/" + image_name
-
-#     conn.request("GET", req_url, headers=headers)
-
-#     res = conn.getresponse()
-#     data = res.read()
-
-#     return data.decode("utf-8")

@@ -48,7 +48,8 @@ figure.item {
   vertical-align: top;
   display: inline-grid;
   text-align: center;
-  width: 150px;
+  /*width: 150px;*/
+
 }
 
 figcaption.caption {
@@ -58,10 +59,14 @@ figcaption.caption {
 }
 
 img {
-  width: 75px;
-  height: 75px;  
-  background-color: grey;
-  border: 1px solid #444;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  width: 150px;
+}
+
+img:hover {
+  box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
 }
 
 </style>
@@ -89,6 +94,7 @@ function replaceEndStuff(p1) {
 
 var jsonstr = replaceSingleQuotes("{{search.search_results|safe}}")
 var image_map = replaceSingleQuotes("{{search.images|safe}}")
+var openslide_url = "{{request.session.search.openslide|safe}}"
 //console.log (typeof jsonstr)
 
 /*  
@@ -174,7 +180,7 @@ function getImageCount(sample_id) {
 /** get a thumbnail cope of the slide images - need this to be sync call**/
 function getImageThumbnail(image_file) {
   var request = new XMLHttpRequest();
-  var  url = "http://localhost:5000/get_image_thumbnail/" + image_file
+  var  url = openslide_url + "/get_image_thumbnail/" + image_file
   var resp = ""
 
   request.open('GET', url, false);  // `false` makes the request synchronous
@@ -192,7 +198,7 @@ function getSlides(sample_id) {
   var settings = {
     "async": true,
     "crossDomain": true,
-    "url": "http://localhost:5000/get_sample_images/" + sample_id,
+    "url": openslide_url + "/get_sample_images/" + sample_id,
     "method": "GET",
     "dataType": 'json',
     "headers": {
@@ -212,7 +218,7 @@ function getSlides(sample_id) {
 
         thumb = getImageThumbnail(images.images[i])
 
-        href = "http://localhost:5000/" + images.images[i]
+        href = openslide_url + "/" + images.images[i]
         toks = images.images[i].split(".")
         
         html += "<figure class=\"item\">"
@@ -242,7 +248,7 @@ $(document).ready(function() {
 
 
 </script>
-<span class="clinical-labels">{{search.result_total|intcomma}} cases found</span>
+<span class="clinical-labels">{{search.result_total.value|intcomma}} cases found</span>
 {% if search.search_results  %}
 <script>
 
