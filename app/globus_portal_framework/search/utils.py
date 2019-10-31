@@ -119,6 +119,7 @@ def search_es(querystr):
         images = ""
         try:
             images = get_imagemap()
+            print(images)
         except Exception as e:
             print("Can't get the image map!!!!")
         
@@ -521,7 +522,7 @@ def service_var_mapper(entry, schema):
 
 #         js = data.decode("utf-8")
 #         jsres = json.loads(js)
-        
+
 #         return jsres['images']
 
 #     except Exception as e:
@@ -535,7 +536,7 @@ def get_imagemap():
         context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
         context.verify_mode = ssl.CERT_NONE   # ignore the cert req
 
-        conn = http.client.HTTPSConnection("openslide", port=5000, context=context)
+        conn = http.client.HTTPSConnection(settings.OPENSLIDE_URL, port=settings.OPENSLIDE_PORT, context=context)
 
         headers = {
             'cache-control': "no-cache",
@@ -560,3 +561,65 @@ def get_imagemap():
         print(e)
         raise e
 
+def fetch_thumbnail(image_name):
+
+    try:
+
+        context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+        context.verify_mode = ssl.CERT_NONE   # ignore the cert req
+
+        conn = http.client.HTTPSConnection(settings.OPENSLIDE_URL, port=settings.OPENSLIDE_PORT, context=context)
+
+        headers = {
+            'cache-control': "no-cache",
+            'postman-token': "3fecc1a7-fd6f-fea8-70ff-a0b493406d03"
+            }
+
+        req_url = "/get_image_thumbnail/" + image_name
+
+        conn.request("GET", req_url, headers=headers)
+
+        res = conn.getresponse()
+        data = res.read()
+
+        js = data.decode("utf-8")
+        print('****fetch_thumbnail***************************************************')
+        print(js)
+        #print(type(jsres))
+        print('*******************************************************')
+        return js
+    except Exception as e:
+        print(e)
+        raise e  
+
+def fetch_slides(slide_id):
+
+    try:
+
+        context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+        context.verify_mode = ssl.CERT_NONE   # ignore the cert req
+
+        conn = http.client.HTTPSConnection(settings.OPENSLIDE_URL, port=settings.OPENSLIDE_PORT, context=context)
+
+        headers = {
+            'cache-control': "no-cache",
+            'postman-token': "3fecc1a7-fd6f-fea8-70ff-a0b493406d03"
+            }
+
+        req_url = "/get_sample_images/"+ slide_id
+
+        conn.request("GET", req_url, headers=headers)
+
+        res = conn.getresponse()
+        data = res.read()
+
+        js = data.decode("utf-8")
+        jsres = json.loads(js)
+        print('****fetch_slides***************************************************')
+        print(jsres)
+        print(type(jsres))
+        print('*******************************************************')
+        return jsres
+    except Exception as e:
+        print(e)
+        raise e

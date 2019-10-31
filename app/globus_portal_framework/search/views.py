@@ -9,7 +9,8 @@ from django.urls import reverse
 from django.contrib import messages
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from globus_portal_framework.search import settings
+
+from globus_portal_framework.search import (settings, utils)
 from globus_portal_framework.transfer import settings as t_settings
 from globus_portal_framework import (preview, helper_page_transfer,
                                      get_helper_page_url, parse_globus_url,
@@ -111,6 +112,7 @@ def search(request):
         settings.DEFAULT_QUERY
     #print(query)
     print('openslide url: {}'.format(settings.OPENSLIDE_URL))
+    openslide = '{}:{}'.format(settings.OPENSLIDE_URL, settings.OPENSLIDE_PORT)
     if query:
         filters = {k.replace('filter.', ''): request.GET.getlist(k)
                    for k in request.GET.keys() if k.startswith('filter.')}
@@ -121,7 +123,7 @@ def search(request):
             'full_query': request.get_full_path(),
             'query': query,
             'filters': filters,
-            'openslide': settings.OPENSLIDE_URL,
+            'openslide': openslide,
             'samples_agg': aggregate(context['search']['facets'], 'Sample Types'),
             'samples_pres_agg': aggregate(context['search']['facets'], 'Sample Preservation Method'),
             'samples_site_agg': aggregate(context['search']['facets'], 'Sample Tissue Type'),
@@ -156,7 +158,7 @@ def search(request):
                 'full_query': request.get_full_path(),
                 'query': query,
                 'filters': filters,
-                'openslide': settings.OPENSLIDE_URL,                
+                'openslide': openslide,                
                 'samples_agg': aggregate(context['search']['facets'], 'Sample Types'),
                 'samples_pres_agg': aggregate(context['search']['facets'], 'Sample Preservation Method'),
                 'samples_site_agg': aggregate(context['search']['facets'], 'Sample Tissue Type'),                
@@ -426,3 +428,9 @@ def detail_preview(request, subject):
         log.debug('User error: {}'.format(pe))
         messages.error(request, pe.message)
     return render(request, 'detail-preview.html', context)
+
+def get_thumbnail(image_name):
+    return fetch_thumbnail(image_name)
+
+def get_slide_images(slide_name):
+    return fetch_slides(slide_name)

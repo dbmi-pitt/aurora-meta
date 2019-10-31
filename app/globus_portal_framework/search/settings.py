@@ -13,7 +13,10 @@ SEARCH_INDEX_REPORT = getattr(settings, 'SEARCH_INDEX_REPORT', '')
 # Local Elasticsearch instance
 ES_URL = getattr(settings, 'ES_URL', '')
 ES_PORT = getattr(settings, 'ES_PORT', '')
-OPENSLIDE_URL = getattr(settings, 'OPENSLIDE_URL', '')
+
+#openslide
+OPENSLIDE_URL = getattr(settings, 'OPENSLIDE_URL', 'localhost')
+OPENSLIDE_PORT = getattr(settings, 'OPENSLIDE_PORT', 5000)
 
 SEARCH_MAPPER = getattr(settings, 'SEARCH_MAPPER',
                         ('globus_portal_framework', 'default_search_mapper'))
