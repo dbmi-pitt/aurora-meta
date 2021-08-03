@@ -15,6 +15,7 @@ function drawHorizontalBarChart(rawData) {
         chartArea: {width: '50%', top:20},
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
+        minValue: 0,
 /*        height: 400,
         hAxis: {
           title: 'Total Cases',
@@ -57,6 +58,9 @@ function drawBarChart(rawData, ititle, elementId) {
         height: "100%",
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
+        hAxis: {
+          minValue: 0,
+        },        
       };
       var chart = new google.visualization.ColumnChart(document.getElementById(elementId));
       chart.draw(view, options);

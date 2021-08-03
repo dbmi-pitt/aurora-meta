@@ -4,7 +4,9 @@ from globus_portal_framework.search.views import (index, detail, search,
                                                   detail_transfer,                                                 
                                                   detail_preview,
                                                   cohort_request,
-                                                  submit_advanced
+                                                  submit_advanced,
+                                                  get_thumbnail,
+                                                  get_slide_images                                                  
                                                   )
 
 urlpatterns = [
@@ -21,6 +23,6 @@ urlpatterns = [
     path('', index, name='index'),
     path('search/', search, name='search'),
     path('submit-advanced/', submit_advanced, name='submit_advanced'),
-#    path('advanced-filters/', advanced_filters, name='advanced-filters')
-    
+    path('get_thumbnail/<str:image_name>', get_thumbnail, name='get_thumbnail'),
+    path('get_slide_images/<slug:slide_name>/', get_slide_images, name='get_slide_images'),       
 ]

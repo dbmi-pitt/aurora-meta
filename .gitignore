@@ -1,5 +1,11 @@
 # This project
-*.sqlite3
+*.sqlite3*
+*.bak
+
+# private stuff
+*.crt
+*.key
+*.pem
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  ddp:
+   container_name: ddp 
+   build: .
+   ports:
+     - "4435:4435"
+   restart: always 
+   networks:
+     - elasticsearch_es01
+networks:
+    elasticsearch_es01:
+       external: true
+

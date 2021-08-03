@@ -21,6 +21,8 @@ MAINTAINER Dockerfiles
 RUN apt-get update && \
     apt-get upgrade -y && \ 	
     apt-get install -y \
+        curl \
+        wget \
 	git \
 	python3 \
 	python3-dev \

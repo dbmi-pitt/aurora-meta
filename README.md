@@ -22,9 +22,20 @@ touched most files here.
 ### Build and run
 #### Build with python3
 * `docker build -t ddp .`
-* `docker run -d -p 4435:4435 --net=data-portal_default --name ddp ddp`
-
+* docker run -d -p 4435:4435 --net=elasticsearch_es01 --name ddp ddp
 ## Elasticsearch
 Use docker-compose file to build a es-based container
 /elasticsearch/docker-compose.yml
+
+
+### Static files
+You must do the following:
+
+-	Enabled DocumentRoot "/var/www/html" in the ssl.conf file
+
+-	Copied static files to the following directory,  /var/www/html/static
+    	    drwxr-xr-x 4 root root  27 Jun  8 13:39 bootstrap
+	    drwxr-xr-x 2 root root 253 Jun  8 13:32 css
+	    drwxr-xr-x 2 root root 212 Jun  8 13:52 img
+            drwxr-xr-x 2 root root 325 Jun  8 13:32 js
 

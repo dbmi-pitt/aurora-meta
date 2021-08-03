@@ -133,13 +133,6 @@
       "active": "true"
     },
     {
-      "name": "Chemotherapy (Met)",
-      "type": "terms",
-      "field_name": "clin.surgpath",
-      "size": 10,
-      "active": "true"
-    },
-    {
       "name": "Neoadjuvant Treatment",
       "type": "terms",
       "field_name": "clin.na_text",
