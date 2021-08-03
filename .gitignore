@@ -1,5 +1,5 @@
 # This project
-*.sqlite3*
+#*.sqlite3*
 *.bak
 
 # private stuff
