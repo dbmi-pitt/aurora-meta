@@ -1,6 +1,7 @@
 # This project
 #*.sqlite3*
 *.bak
+*DS_Store*
 
 # private stuff
 *.crt

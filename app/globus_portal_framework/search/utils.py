@@ -29,7 +29,10 @@ SEARCH_SCHEMA = load_json_file(settings.SEARCH_SCHEMA)
 
 def post_search(index, query, filters, user=None, page=1, advanced=False):
     print("post search")
-    #print(filters)
+    print(filters)
+
+    if query == '*' and len(filters) > 0:
+        query = ""
 
     if advanced:
         adv_query = reformat_filters(filters)
@@ -60,7 +63,7 @@ def search_es(querystr):
     try:
         es = Elasticsearch([{'host': es_url, 'port': settings.ES_PORT}])
     except Exception as e:
-        print('DARN an error!!')
+        print('There is a problem with the ES instance, trying the localhost!!')
         es = Elasticsearch([{'host': 'localhost', 'port': settings.ES_PORT}])
 
     tokens = querystr.split(" ")
@@ -100,7 +103,7 @@ def search_es(querystr):
             t['terms'] = {"field": x }
             ae[f['field_name']] = t
             a['aggs'].update(ae)
-    #print(a)
+    print(SEARCH_SCHEMA['facets'])
     body.update(a)   # update the query body with aggregates
     #print(body)
 
@@ -138,51 +141,26 @@ def search_es(querystr):
             'result_total': res['hits']['total'], 
             'facets':facets,
             'query':querystr,
-            'images':images
+            'images':images,
+            'filters': pretty_filters(querystr) #pretty_filters(fmt_filters)
 #            'report_results': reports['report_results'],
  #           'report_total': reports['report_total']
             }
 
-def search_es_reports(querystr):
-    result = []
+# convert field names into pretty names from the facet definitions
+def pretty_filters(qstr):
 
-    es = Elasticsearch([{'host': 'localhost', 'port': '9200'}])
-
-    # form basic query body
-    body = { "from": 0, "size": 25,
-        #"_source": "rtext",   #"DOCUMENT_TEXT",
-#        "query": {
-#            "match": {
-                #"DOCUMENT_TEXT": querystr
-#                "rtext": querystr
-#            }
- #       }
-          "query": {
-           "query_string": {
-                "query": querystr,
-                "analyze_wildcard": True,
-                "default_field": "*"
-           }
-        }   
-    }
-    try:
-        #q = "content." + q
-        #print(q)
-        res = es.search(index=settings.SEARCH_INDEX_REPORT, body=body)
-        print("ES: %d reports found" % res['hits']['total'])
-        #print(res['hits']['hits'])
-        #print(res)
-        gfilters = {}
-        results = process_search_data_reports(res['hits']['hits'])
-        #print(facets)        
-
-    except Exception as e:
-        raise e
-    #for doc in res['hits']['hits']:
-    #    print("%s) %s" % (doc['_id'], doc['_source']['content']))
-    return {'report_results': results, 
-            'report_total': res['hits']['total'], 
-            }
+    filter_toks = qstr.split()
+    position = 0
+    for t in filter_toks:
+        expr = t.split(":")
+        if len(expr) > 1:
+            for f in SEARCH_SCHEMA['facets']:
+                if expr[0] == f["field_name"]:
+                    filter_toks[position] = f["name"] + ":" + expr[1]
+                    break
+        position = position + 1
+    return ' '.join(filter_toks)
 
 
 # this reformats the filters to a format that is used by Elasticsearch 

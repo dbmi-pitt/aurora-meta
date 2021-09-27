@@ -119,10 +119,10 @@ def search(request):
         context['search'] = post_search(settings.SEARCH_INDEX, query, filters,
                                         request.user,
                                         request.GET.get('page', 1))
+        print(filters)
         request.session['search'] = {
             'full_query': request.get_full_path(),
             'query': query,
-            'filters': filters,
             'openslide': openslide,
             'samples_agg': aggregate(context['search']['facets'], 'Sample Types'),
             'samples_pres_agg': aggregate(context['search']['facets'], 'Sample Preservation Method'),
@@ -157,7 +157,6 @@ def search(request):
             request.session['search'] = {
                 'full_query': request.get_full_path(),
                 'query': query,
-                'filters': filters,
                 'openslide': openslide,                
                 'samples_agg': aggregate(context['search']['facets'], 'Sample Types'),
                 'samples_pres_agg': aggregate(context['search']['facets'], 'Sample Preservation Method'),

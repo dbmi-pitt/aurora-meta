@@ -67,11 +67,11 @@ var samplesData = jsamplesData[0].values;  // get the values
 google.charts.load("current", {packages:['corechart']});
 google.charts.setOnLoadCallback(function(){ drawBarChart(samplesData, "Sample Types", "samples-chart", true) });
 
-var samplesPresDataRaw = replaceSingleQuotes("{{request.session.search.samples_pres_agg|safe}}");
-var jsamplesPresData = JSON.parse(samplesPresDataRaw);  // convert to a json
-var samplesPresData = jsamplesPresData[0].values;  // get the values
-google.charts.load("current", {packages:['corechart']});
-google.charts.setOnLoadCallback(function(){ drawBarChart(samplesPresData, "Sample Preservation Methods", "samples-pres-chart", true) });
+// var samplesPresDataRaw = replaceSingleQuotes("{{request.session.search.samples_pres_agg|safe}}");
+// var jsamplesPresData = JSON.parse(samplesPresDataRaw);  // convert to a json
+// var samplesPresData = jsamplesPresData[0].values;  // get the values
+// google.charts.load("current", {packages:['corechart']});
+// google.charts.setOnLoadCallback(function(){ drawBarChart(samplesPresData, "Sample Preservation Methods", "samples-pres-chart", true) });
 
 
 var samplesSitesDataRaw = replaceSingleQuotes("{{request.session.search.samples_site_agg|safe}}");
@@ -131,8 +131,8 @@ $(document).ready(function() {
        <form id="search-form" class="my-4" name="search_form" action="{% url 'search' %}">
         <div class="input-group mb-3">
         <input type="text" class="form-control" onclick="this.select()"
-           data-provide="typeahead" name="q" title="Search for text or IDs (e.g., AUR_01_01_06)"
-           value="{{request.session.search.query}}" placeholder="Search for text or IDs (e.g., AUR_01_01_06)">  
+           data-provide="typeahead" name="q" title="Search for text or IDs"
+            placeholder="Search for text or IDs (e.g., AUR_01_01_06)">  
            <div class="input-group-append">         
               <button type="submit" class="btn btn-outline-secondary">
                 <i class="fas fa-search"></i>
@@ -164,7 +164,7 @@ $(document).ready(function() {
   <table>
     <tr>
       <td><div id="samples-chart" style="width: 380px; height: 200px;"></div></td>
-      <td><div id="samples-pres-chart" style="width: 300px; height: 200px;"></div></td>
+  <!--     <td><div id="samples-pres-chart" style="width: 300px; height: 200px;"></div></td> -->
       <td><div id="site_chart" style="width: 200px; height: 200px;"></div></td>      
     </tr>
   </table>

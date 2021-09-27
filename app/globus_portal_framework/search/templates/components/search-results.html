@@ -167,6 +167,8 @@ function exportCSVFile(specHeaders, items, fileTitle) {
 }
 
 function getImageCount(sample_id) {
+  if (image_map === undefined || image_map === "")
+    return 0;
   var jobj = JSON.parse(image_map);
   var cnt = jobj[sample_id];
   if (cnt === undefined || cnt === null)
@@ -364,20 +366,22 @@ $(document).ready(function() {
   </div>
 -->
 
-
 <div class="float-right">
+
 <button type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(clinHeaders, clinFormatted, 'aurora_clinical')"><i class="fas fa-download"></i>&nbsp;&nbsp;Clinical</button>&nbsp;&nbsp;
 <button type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(specHeaders, specFormatted, 'aurora_samples')"><i class="fas fa-download"></i>&nbsp;&nbsp;Biospecimen</button>&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm" onClick="exportCSVFile(analyteHeaders, analyteFormatted, 'aurora_analyte')"><i class="fas fa-download"></i>&nbsp;&nbsp;Analytes</button>
 </div>
 <hr>
 {% endif %}
 <div class="resultscrollarea">
+  <div class="alert alert-info overflow-auto font-weight-bold">Filters: {{search.filters}}</div>
+
   {% for result in search.search_results %}
     <div class="card-header" id="{{result.content.clin.patient_barcode}}_h">
 
-        <button class="btn btn-link" data-toggle="collapse" data-target="#{{result.content.clin.patient_barcode}}" aria-expanded="true" aria-controls="{{result.content.clin.patient_barcode}}">
-          <i class="fas fa-user"></i>&nbsp;BCR Patient Barcode: {{result.content.clin.patient_barcode}}&nbsp;|&nbsp;&nbsp;<i class="fas fa-flask"></i>&nbsp;Samples:&nbsp;{{result.content.samples|length}}
-        </button>
+        <button class="btn btn-light btn-sm" data-toggle="collapse" data-target="#{{result.content.clin.patient_barcode}}" aria-expanded="true" aria-controls="{{result.content.clin.patient_barcode}}">
+          <i class="fas fa-user"></i>&nbsp;Patient Barcode: {{result.content.clin.patient_barcode}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="clinical-labels">Primary:&nbsp;&nbsp;</span><span>{{result.content.clin.histologic_type_primary}}</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="clinical-labels">Race:&nbsp;&nbsp;</span><span>{{result.content.clin.dem_race}}</span>&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<i class="fas fa-flask"></i>&nbsp;Samples:&nbsp;{{result.content.samples|length}}
+        </button><span class="arrow-rt"><i class="fas fa-angle-down"></i></span>
 
     </div>
      <div id="{{result.content.clin.patient_barcode}}" class="collapse" aria-labelledby="{{result.content.clin.patient_barcode}}_h" data-parent="#bioaccordion">
@@ -394,7 +398,7 @@ $(document).ready(function() {
             <td><span class="clinical-labels">Ethnicity:&nbsp;&nbsp;</span><span>{{result.content.clin.dem_ethnicity}}</span></td>
           </tr>
           <tr>
-            <td><span class="clinical-labels">Primary:&nbsp;&nbsp;</span><span>{{result.content.clin.tissue_prim1_histology}}</span></td>          
+            <td><span class="clinical-labels">Primary:&nbsp;&nbsp;</span><span>{{result.content.clin.histologic_type_primary}}</span></td>          
             <td><span class="clinical-labels">BRCA 1/2 mutation?:&nbsp;&nbsp;</span><span>{{result.content.clin.dem_brca}}</span></td>                        
           </tr>
           <tr>
@@ -427,15 +431,15 @@ $(document).ready(function() {
       <table class="greyGridTable">
          <thead>
             <tr>
-              <th style="width: 20px;"></th>
+              <th style="width: 5px;"></th>
               <th>BCR Sample Barcode</th>
               <th>Sample Identifier</th>
               <th>Sample Type</th>
               <th>Tissue Type</th>
               <th>Composition</th>
               <th>Preservation Method</th>
-              <th># of Portions</th>
-              <th>Slides</th>
+              <th>Portions</th>
+              <th>Slides <i class="fas fa-microscope"></i></th>
             </tr>
           </thead>
         <tbody>
@@ -450,7 +454,7 @@ $(document).ready(function() {
             <td><span>{{sample.sample_info.preservation_method}}</span></td>
             <td><button class="btn btn-secondary btn-sm" id="btn_{{sample.identifiers.bcr_sample_uuid}}" data-toggle="button" title="click to toggle portions panel" aria-pressed="false" autocomplete="off">({{sample.portion|length}})&nbsp;<i class="fas fa-list"></i></button></td>
 
-            <td><input class="imagegallery_open btn btn-secondary btn-sm" id="btnimages_{{sample.identifiers.bcr_sample_uuid}}" type="button" onclick="getSlides('{{sample.identifiers.bcr_sample_barcode}}')" value="">&nbsp;<i class="fas fa-microscope"></i></input></td>          
+            <td><input class="imagegallery_open btn btn-secondary btn-sm" id="btnimages_{{sample.identifiers.bcr_sample_uuid}}" type="button" onclick="getSlides('{{sample.identifiers.bcr_sample_barcode}}')" value="">&nbsp;</input></td>          
           </tr>   
             <script>
                 var elem = document.getElementById("btnimages_{{sample.identifiers.bcr_sample_uuid}}")
@@ -464,49 +468,27 @@ $(document).ready(function() {
            <div id="portions_{{sample.identifiers.bcr_sample_uuid}}" style="display: none;"> <!--style="display: none;"-->
               <div>
               {% for po in sample.portion %}
-                <span class="navbar navbar-dark" style="background-color: #A4A4A4; color: #FFFFFF; font-weight: bold;">{{po.identifiers.bcr_portion_barcode}} | #{{forloop.counter}}</span>
-
+              <span class="navbar navbar-dark" style="font-weight: bold;">Portion barcode: {{po.identifiers.bcr_portion_barcode}}</span>
+              <!--   <span class="navbar navbar-dark" style="background-color: #A4A4A4; color: #FFFFFF; font-weight: bold;">{{po.identifiers.bcr_portion_barcode}}</span>
+ -->
                       {% for al in po.analyte %}
-                      &nbsp;&nbsp;&nbsp;&nbsp;<span class="sample-labels">Analyte Barcode:</span> {{al.identifiers.bcr_analyte_barcode}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Analyte Type:</span> {{al.identifiers.analyte_type}}<br>
-                            {% for aq in al.aliquot %}
-                                  {% if aq.seq_info.WES %}   <!-- check for a WES -->
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sample-labels">Aliquot Barcode:</span>{{aq.identifiers.bcr_aliquot_barcode}} &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Analysis Type:</span>{{aq.seq_info.WES.analysis_type}} &nbsp;|&nbsp;<span class="sample-labels">Seq Type:</span> {{aq.seq_info.WES.seq_type}}
-                                      <ul>                                    
-                                          {% if aq.seq_info.WES.files|length > 0 %}
-                                            {% for f in aq.seq_info.WES.files %}
-                                              <li><b>{{f.level}}</b>&nbsp;&nbsp;|&nbsp;&nbsp;<b>{{f.file_type}}</b>&nbsp;&nbsp;|&nbsp;&nbsp;{{f.file_names}}</li>
-                                            {% endfor %}
-                                             {% else %}
-                                              <li>No Associated Files</li>
-                                          {% endif %}
-                                      </ul>
+                      &nbsp;&nbsp;&nbsp;&nbsp;<span class="sample-labels">- Analyte Barcode:</span> {{al.identifiers.bcr_analyte_barcode}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Analyte Type:</span> {{al.identifiers.analyte_type}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; # of Aliquots: {{al.aliquot | length}}<br>
+                           <!-- {% for aq in al.aliquot %}
+                                  {% if aq.seq_info.WES %}  
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sample-labels">Aliquot Barcode:</span>{{aq.identifiers.bcr_aliquot_barcode}} &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Analysis Type:</span>{{aq.seq_info.WES.analysis_type}} &nbsp;|&nbsp;<span class="sample-labels">Seq Type:</span> {{aq.seq_info.WES.seq_type}}<br>
+                      
                                     {% endif %}
-                                    {% if aq.seq_info.WGS %}   <!-- check for a WSG -->
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sample-labels">Aliquot Barcode:</span>{{aq.identifiers.bcr_aliquot_barcode}} &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Analysis Type:</span>{{aq.seq_info.WGS.analysis_type}} &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Seq Type:</span>{{aq.seq_info.WGS.seq_type}}
-                                        <ul>
-                                          {% if aq.seq_info.WGS.files|length > 0 %}
-                                            {% for f in aq.seq_info.WGS.files %}
-                                              <li><b>{{f.level}}</b>&nbsp;&nbsp;|&nbsp;&nbsp;<b>{{f.file_type}}</b>&nbsp;&nbsp;|&nbsp;&nbsp;{{f.file_names}}</li>
-                                            {% endfor %}
-                                            {% else %}
-                                              <li>No Associated Files</li>
-                                          {% endif %}
-                                        </ul>
+                                    {% if aq.seq_info.WGS %} 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sample-labels">Aliquot Barcode:</span>{{aq.identifiers.bcr_aliquot_barcode}} &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Analysis Type:</span>{{aq.seq_info.WGS.analysis_type}} &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Seq Type:</span>{{aq.seq_info.WGS.seq_type}}<br>
+                    
                                     {% endif %}
                                     {% if aq.seq_info.WES == None and aq.seq_info.WGS == None %}
-                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sample-labels">Aliquot Barcode:</span>{{aq.identifiers.bcr_aliquot_barcode}} &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Analysis Type:</span>{{aq.seq_info.analysis_type}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Seq Type:</span>{{aq.seq_info.seq_type}}
-                                      <ul>
-                                        {% if aq.seq_info.files|length > 0 %}
-                                            {% for f in aq.seq_info.files %}
-                                              <li><b>{{f.level}}</b>&nbsp;&nbsp;|&nbsp;&nbsp;<b>{{f.file_type}}</b>&nbsp;&nbsp;|&nbsp;&nbsp;{{f.file_names}}</li>
-                                            {% endfor %}   
-                                          {% else %}
-                                              <li>No Associated Files</li>                                       
-                                        {% endif %}
-                                      </ul>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sample-labels">Aliquot Barcode:</span>{{aq.identifiers.bcr_aliquot_barcode}} &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Analysis Type:</span>{{aq.seq_info.analysis_type}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="sample-labels">Seq Type:</span>{{aq.seq_info.seq_type}}<br>
+                                    
                                     {% endif %}
-                                {% endfor %}
-                            {% endfor %}
+                            {% endfor %} -->
+                      
+                      {% endfor %}
                     {% endfor %}
                   </div>
                 </div>

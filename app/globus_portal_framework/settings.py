@@ -21,12 +21,14 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/') 
 
-DEBUG = False 
+DEBUG = True 
 
 if DEBUG == False:
     USE_X_FORWARDED_HOST = True
     FORCE_SCRIPT_NAME = '/ddp'
 
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
