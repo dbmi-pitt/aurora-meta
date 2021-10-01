@@ -189,13 +189,13 @@ function getSlides(sample_id) {
   xhr.send()
 
   xhr.onreadystatechange = function() {
-
-  if (this.readyState == 4 && this.status == 200) {
     var element = document.getElementById("image_list"); 
+  if (this.readyState == 4 && this.status == 200) {
+    //var element = document.getElementById("image_list"); 
     var images = JSON.parse(xhr.responseText);
     var html = ""
     var thumb = ""
-    console.log(images)
+    //console.log(images)
     var count = images.images.length
 
     if (count > 0) {
@@ -220,6 +220,12 @@ function getSlides(sample_id) {
     $('#imagegallery').popup({
     });  
     // Animate loader off screen
+    $(".image_list").fadeIn("slow");
+    $(".wait-img").fadeOut("slow");
+  } else {
+
+     element.innerHTML = "<div class='alert alert-danger' role='alert'>Image server is unavailable</div>";
+     // Animate loader off screen
     $(".image_list").fadeIn("slow");
     $(".wait-img").fadeOut("slow");
   }
@@ -386,8 +392,28 @@ $(document).ready(function() {
     </div>
      <div id="{{result.content.clin.patient_barcode}}" class="collapse" aria-labelledby="{{result.content.clin.patient_barcode}}_h" data-parent="#bioaccordion">
       <div class="card-body">
-      <span class="navbar navbar-light" style="background-color: #D8D8D8; font-weight: bold;">Clinical Information</span>
-      <table id="repdata">
+        <div class="panel-body">
+        <button class="btn btn-secondary btn-sm" id="btn_{{result.content.clin.patient_barcode}}" data-toggle="button" title="click to toggle clinical panel" aria-pressed="false" autocomplete="off">Show clinical info</button>
+         <script>
+                  $( "#btn_{{result.content.clin.patient_barcode}}" ).click(function() {
+                    $( "#clinpanel_{{result.content.clin.patient_barcode}}" ).toggle("slow");
+                  });
+            </script>
+        <div id="clinpanel_{{result.content.clin.patient_barcode}}" style="display: none;">
+         <table id="repdata">
+        <tbody>
+            {% for key, value in result.content.clin.items %}  
+              <tr>
+                <td><span class="clinical-labels">{{key}}:</span></td>
+                <td><span>{{value}}</span></td>
+              </tr>
+      
+            {% endfor %}
+        </div>
+         </tbody>
+        </table> 
+      </div>
+ <!--      <table id="repdata">
         <tbody>
           <tr>
             <td><span class="clinical-labels">BCR Patient Barcode:&nbsp;&nbsp;</span><span>{{result.content.clin.patient_barcode}}</span></td>
@@ -426,7 +452,7 @@ $(document).ready(function() {
           </tr>
 
         </tbody>
-      </table>      
+      </table>       -->
       <span class="navbar navbar-light" style="background-color: #D8D8D8; font-weight: bold;">Samples</span>
       <table class="greyGridTable">
          <thead>

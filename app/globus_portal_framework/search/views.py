@@ -24,6 +24,8 @@ log = logging.getLogger(__name__)
 def index(request):    
     context = {}
 
+    context['es_is_active'] = utils.checkES_connection()
+
     if not request.user.is_authenticated:
         return redirect('%s/globus?next=%s' % (settings.LOGIN_URL, request.path))
 
@@ -127,7 +129,9 @@ def search(request):
             'samples_agg': aggregate(context['search']['facets'], 'Sample Types'),
             'samples_pres_agg': aggregate(context['search']['facets'], 'Sample Preservation Method'),
             'samples_site_agg': aggregate(context['search']['facets'], 'Sample Tissue Type'),
-            'show_results': 'True'
+            'show_results': 'True',
+            'HELLO': 'hi',
+            'display_fields': utils.get_display_fields()
 #            'aggregate': aggregate(context['search']['facets'], 'Age at Dx'),
 #            'histology': aggregate(context['search']['facets'], 'Histology'),
 #            'gender': aggregate(context['search']['facets'], 'Gender'),
@@ -161,7 +165,8 @@ def search(request):
                 'samples_agg': aggregate(context['search']['facets'], 'Sample Types'),
                 'samples_pres_agg': aggregate(context['search']['facets'], 'Sample Preservation Method'),
                 'samples_site_agg': aggregate(context['search']['facets'], 'Sample Tissue Type'),                
-                'show_results': 'False'
+                'show_results': 'False',
+                'display_fields': utils.get_display_fields()
             }
 
         except ExpiredGlobusToken as ex:
@@ -314,7 +319,8 @@ def submit_advanced(request):
         'samples_agg': aggregate(context['search']['facets'], 'Sample Types'),
         'samples_pres_agg': aggregate(context['search']['facets'], 'Sample Preservation Method'),
         'samples_site_agg': aggregate(context['search']['facets'], 'Sample Tissue Type'),        
-        'show_results': 'True'
+        'show_results': 'True',
+        'display_fields': utils.get_display_fields()
 #        'aggregate': aggregate(context['search']['facets'], 'Age at Dx'),
 #        'histology': aggregate(context['search']['facets'], 'Histology'),
 #        'gender': aggregate(context['search']['facets'], 'Gender'),

@@ -82,7 +82,11 @@
 <div class="h-center">
   You have successfully logged in and can now begin searching the repository 
   <span>
+    {%if es_is_active %}
   <a class="btn btn-success btn-lg" href="{% url 'search' %}">Get Started</a>
+  {% else %}
+    <div class="alert alert-danger" role="alert">The data search repository is not available at this time {{context.es_is_active}}</div>
+  {% endif %}
 </span>
 </div>
 <br>

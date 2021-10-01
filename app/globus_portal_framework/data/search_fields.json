@@ -1,22 +1,13 @@
 {
   "fields": {
-    "clin.dem_race": {
+    "result.content.clin.dem_race": {
       "field_title": "Race"
     },
-    "clin.prim_stage_dx": {
-      "field_title": "Stage"
+    "result.content.clin.c_stage": {
+      "field_title": "Primary Stage"
     },
-    "clin.tissue_prim1_histology": {
-      "field_title": "Histology"
-    },
-    "samples.sample_info.preservation_method": {
-      "field_title": "Sample Preservation Method"
-    },
-    "samples.sample_info.sample_type": {
-      "field_title": "Sample Types"
-    },
-    "samples.sample_info.sample_site": {
-      "field_title": "Sample Sites"
+    "result.content.clin.histologic_type_primary": {
+      "field_title": "Primary Histology"
     }
   },
   "facets": [

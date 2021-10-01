@@ -48,6 +48,21 @@ def post_search(index, query, filters, user=None, page=1, advanced=False):
 
     return search_es(query)
 
+def checkES_connection():
+    try:
+        print('check ES connecton...')
+        es = Elasticsearch([{'host': es_url, 'port': settings.ES_PORT}])
+        print('check ES connecton...OK')
+        return True
+    except Exception as e:
+        try:
+            print('check local ES connecton...')
+            es = Elasticsearch([{'host': 'localhost', 'port': settings.ES_PORT}])
+            print('check local ES connecton...OK')
+            return True    
+        except Exception as ex2:
+            return False      
+
 
 def search_es(querystr):
     result = []
@@ -293,7 +308,8 @@ def process_search_data(results):
             'doc_score': entry['_score']
             #'images' : get_images(entry['_id'])
         })
-    #print(structured_results)
+    print('Structured results')
+    print(structured_results)
     return structured_results
 
 def process_search_data_reports(results):
@@ -601,3 +617,16 @@ def fetch_slides(slide_id):
     except Exception as e:
         print(e)
         raise e
+
+def get_display_fields():
+    print('display fields')
+    
+
+    fields = [ {
+                       'field_title': v['field_title'],
+                       'data': k
+                  } for k, v in SEARCH_SCHEMA['fields'].items()]
+
+    print(fields)
+
+    return fields
